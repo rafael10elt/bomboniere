@@ -3,635 +3,474 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doce Gestão - Sistema de Bomboniere</title>
+    <title>Lumi Doces - Sistema de Gestão</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
-            --bg-primary: #fdf2f8; /* pink-50 */
-            --bg-secondary: #ffffff;
-            --glass-bg: rgba(255, 255, 255, 0.6);
-            --text-primary: #581c87; /* purple-900 */
-            --text-secondary: #6b7280; /* gray-500 */
-            --text-title: #db2777; /* pink-600 */
-            --border-color: rgba(0, 0, 0, 0.1);
-            --input-bg: #f5d0fe; /* fuchsia-200 */
-            --input-border: #e879f9; /* fuchsia-400 */
-            --btn-bg: #fbcfe8; /* pink-200 */
-            --btn-border: #f9a8d4; /* pink-300 */
-            --btn-hover-bg: #f9a8d4; /* pink-300 */
-            --accent-pink: #db2777;
-            --accent-purple: #9333ea;
+            --bg-primary: #0d1117; --bg-secondary: #161b22; --glass-bg: rgba(22, 27, 34, 0.6);
+            --text-primary: #e2e8f0; --text-secondary: #9ca3af; --text-title: #3b82f6;
+            --border-color: rgba(255, 255, 255, 0.1); --input-bg: #1e293b; --input-border: #334155;
+            --btn-bg: #1e293b; --btn-border: #334155; --btn-hover-bg: #334155;
+            --accent-orange: #ff6b35; --electric-blue: #00d4ff; --dark-overlay: rgba(10, 25, 47, 0.9);
         }
-
-        .dark-theme {
-            --bg-primary: #1e1b2e;
-            --bg-secondary: #2a273f;
-            --glass-bg: rgba(42, 39, 63, 0.6);
-            --text-primary: #f3e8ff; /* purple-50 */
-            --text-secondary: #a8a29e; /* stone-400 */
-            --text-title: #f472b6; /* pink-400 */
-            --border-color: rgba(255, 255, 255, 0.15);
-            --input-bg: #3b385e;
-            --input-border: #5a568a;
-            --btn-bg: #5a568a;
-            --btn-border: #7c78aa;
-            --btn-hover-bg: #7c78aa;
-            --accent-pink: #f472b6;
-            --accent-purple: #c084fc;
+        .light-theme {
+            --bg-primary: #f1f5f9; --bg-secondary: #ffffff; --glass-bg: rgba(255, 255, 255, 0.7);
+            --text-primary: #0f172a; --text-secondary: #475569; --text-title: #1d4ed8;
+            --border-color: #e2e8f0; --input-bg: #ffffff; --input-border: #cbd5e1;
+            --btn-bg: #f1f5f9; --btn-border: #cbd5e1; --btn-hover-bg: #e2e8f0;
         }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            transition: background-color 0.3s, color 0.3s;
-        }
-        
-        .font-title {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-        }
-
-        .glass-effect {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border-color);
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-        
-        .glow-text {
-            text-shadow: 0 0 8px var(--accent-pink);
-        }
-        .light-theme .glow-text {
-            text-shadow: none;
-        }
-
-        .action-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 50%;
-            transition: background-color 0.2s;
-            color: var(--text-secondary);
-        }
-        .action-btn:hover {
-            background-color: rgba(127, 127, 127, 0.1);
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-primary); }
-        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
-        .dark-theme ::-webkit-scrollbar-thumb { background: #4a5568; }
-        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
-        .dark-theme ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
-
-        /* Input Styles */
-        .custom-input, .custom-select {
-            background-color: var(--input-bg);
-            border: 1px solid var(--input-border);
-            color: var(--text-primary);
-            border-radius: 0.375rem;
-            padding: 0.5rem 0.75rem;
-            width: 100%;
-        }
-        .custom-input::placeholder {
-            color: var(--text-secondary);
-        }
-
-        .view-btn-inactive {
-            color: var(--text-secondary);
-            background-color: transparent;
-        }
-        .view-btn-inactive:hover {
-            background-color: var(--btn-hover-bg);
-        }
-        .view-btn-active {
-            background-color: var(--accent-pink);
-            color: white;
-            box-shadow: 0 2px 10px -2px var(--accent-pink);
-        }
-        
-        .stock-status {
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .stock-status-ok { background-color: #dcfce7; color: #166534; }
-        .stock-status-low { background-color: #fef9c3; color: #854d0e; }
-        .stock-status-out { background-color: #fee2e2; color: #991b1b; }
-
-        .dark-theme .stock-status-ok { background-color: #14532d; color: #bbf7d0; }
-        .dark-theme .stock-status-low { background-color: #713f12; color: #fde047; }
-        .dark-theme .stock-status-out { background-color: #7f1d1d; color: #fecaca; }
-        
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-primary); color: var(--text-primary); transition: background-color 0.3s, color 0.3s; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .logo-symbol { width: 50px; height: 50px; background: linear-gradient(135deg, var(--dark-overlay), var(--dark-overlay)); border-radius: 10px; margin-right: 15px; display: flex; align-items: center; justify-content: center; position: relative; animation: glow 2s ease-in-out infinite alternate; }
+        @keyframes glow { from { box-shadow: 0 0 20px var(--accent-orange); } to { box-shadow: 0 0 30px var(--electric-blue), 0 0 40px var(--electric-blue); } }
+        .glass-effect { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-color); transition: background-color 0.3s, border-color 0.3s; }
+        .glow-text { text-shadow: 0 0 5px rgba(59, 130, 246, 0.5), 0 0 10px rgba(59, 130, 246, 0.5); }
+        .light-theme .glow-text { text-shadow: none; }
+        .action-btn { background: transparent; border: none; cursor: pointer; padding: 4px; border-radius: 50%; transition: background-color 0.2s; color: var(--text-secondary); }
+        .action-btn:hover { background-color: rgba(127, 127, 127, 0.1); }
+        ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: var(--bg-primary); } ::-webkit-scrollbar-thumb { background: #2d3748; border-radius: 4px; } .light-theme ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+        .custom-input, .custom-select { background-color: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-primary); border-radius: 0.375rem; padding: 0.5rem 0.75rem; width: 100%; }
+        .light-theme .custom-input, .light-theme .custom-select { color: var(--text-primary); }
+        .light-theme .custom-input option, .light-theme .custom-select option { background-color: white; color: black; }
+        .custom-input::placeholder { color: var(--text-secondary); }
+        .page-btn { color: var(--text-secondary); background-color: transparent; padding: 0.5rem 1rem; border-radius: 0.375rem; transition: all 0.2s; font-weight: 500; }
+        .page-btn:hover { background-color: var(--btn-hover-bg); }
+        .page-btn-active { background-color: var(--text-title); color: white; box-shadow: 0 2px 10px -2px var(--text-title); }
+        .stock-status { padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .stock-status-ok { background-color: #166534; color: #dcfce7; } .stock-status-low { background-color: #854d0e; color: #fef9c3; } .stock-status-out { background-color: #991b1b; color: #fee2e2; }
+        .light-theme .stock-status-ok { background-color: #dcfce7; color: #166534; } .light-theme .stock-status-low { background-color: #fef9c3; color: #854d0e; } .light-theme .stock-status-out { background-color: #fee2e2; color: #991b1b; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; }
-
+        .payment-btn-group button { border: 1px solid var(--input-border); padding: 8px 12px; transition: background-color 0.2s; }
+        .payment-btn-group button.selected { background-color: var(--text-title); color: white; border-color: var(--text-title); }
+        .modal-label { color: var(--text-secondary); } .light-theme .modal-label { color: var(--text-primary); }
+        .chart-container { position: relative; height: 350px; width: 100%; }
+        .search-results-option { background-color: var(--input-bg); } .light-theme .search-results-option { background-color: var(--bg-secondary); }
+        #salesFilterButtons button.filter-btn-active { background-color: var(--text-title); color: white; }
     </style>
 </head>
 <body class="min-h-screen">
-
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-full">
-        <!-- HEADER -->
-        <header class="flex items-center justify-between gap-4 mb-10">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-pink-200 dark:bg-pink-500 rounded-full flex items-center justify-center text-2xl font-bold text-pink-600 dark:text-white">
-                    DG
-                </div>
-                <h1 class="text-3xl sm:text-4xl font-title" style="color: var(--text-title);">Doce Gestão</h1>
-            </div>
-            <button id="themeToggleBtn" class="action-btn p-2 rounded-full" title="Alternar tema">
-                <svg id="theme-icon-sun" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                <svg id="theme-icon-moon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-            </button>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-full">
+        <header class="flex items-center justify-between gap-4 mb-6 pt-4 sm:pt-6">
+            <div class="flex items-center gap-4"><div class="logo-symbol"><img src="https://i.imgur.com/J3cANt2.png" alt="Logo Lumi" style="width: 38px; height: 38px; object-fit: contain; position: absolute; left: 6px; top: 6px; z-index: 2; pointer-events: none;" /></div><h1 class="text-3xl sm:text-4xl font-bold font-orbitron glow-text">Lumi Doces</h1></div>
+            <button id="themeToggleBtn" class="action-btn p-2 rounded-full" title="Alternar tema"><svg id="theme-icon-sun" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg><svg id="theme-icon-moon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg></button>
         </header>
 
-        <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Coluna de Registro de Venda -->
-            <div class="lg:col-span-1">
-                <div class="glass-effect rounded-lg shadow-2xl p-6 h-full">
-                    <h2 class="text-2xl font-semibold mb-5 font-title" style="color: var(--text-title);">Registrar Venda</h2>
-                    <form id="salesForm" class="space-y-4">
-                        <div>
-                            <label for="sale-product" class="block text-sm font-medium mb-1" style="color: var(--text-primary);">Produto</label>
-                            <select id="sale-product" name="produto" required class="custom-select"></select>
+        <nav class="mb-8 p-2 glass-effect rounded-lg flex items-center justify-center sm:justify-start gap-2">
+            <button id="pageVendasBtn" class="page-btn">Vendas</button>
+            <button id="pageEstoqueBtn" class="page-btn">Estoque</button>
+            <button id="pageDashboardBtn" class="page-btn page-btn-active">Dashboard</button>
+        </nav>
+
+        <main id="app-content">
+            <!-- PÁGINA DASHBOARD -->
+            <div id="dashboardPage">
+                 <div class="glass-effect p-4 rounded-lg mb-8 flex flex-col sm:flex-row items-center gap-4 justify-between flex-wrap">
+                    <div class="flex items-center gap-2 flex-wrap"><label for="dashboardFilterStartDate" class="text-sm">De:</label><input type="date" id="dashboardFilterStartDate" class="custom-input w-auto"><label for="dashboardFilterEndDate" class="text-sm">Até:</label><input type="date" id="dashboardFilterEndDate" class="custom-input w-auto"></div>
+                    <div id="salesFilterButtons" class="flex items-center gap-2 rounded-md p-1" style="background-color: var(--btn-bg);"><button data-period="week" class="px-3 py-1 text-sm rounded-md">Semana</button><button data-period="month" class="px-3 py-1 text-sm rounded-md">Mês</button><button data-period="year" class="px-3 py-1 text-sm rounded-md">Ano</button></div>
+                 </div>
+                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-gray-400">FATURAMENTO TOTAL</h3><p id="metricTotalRevenue" class="text-2xl font-bold"></p></div>
+                    <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-gray-400">ITENS VENDIDOS</h3><p id="metricItemsSold" class="text-2xl font-bold"></p></div>
+                    <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-gray-400">TOTAL DE VENDAS</h3><p id="metricTotalSales" class="text-2xl font-bold"></p></div>
+                    <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-gray-400">TICKET MÉDIO</h3><p id="metricAvgTicket" class="text-2xl font-bold"></p></div>
+                 </div>
+                 
+                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                     <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Produtos por Categoria</h3><div id="categoryProductCount" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
+                     <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Vendas por Pagamento</h3><div id="paymentMethodCards" class="grid grid-cols-2 gap-4 h-full content-center"></div></div>
+                 </div>
+                 
+                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                     <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Faturamento por Categoria</h3><div class="chart-container"><canvas id="categorySalesChart"></canvas></div></div>
+                     <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Vendas por Dia da Semana</h3><div class="chart-container"><canvas id="salesByWeekdayChart"></canvas></div></div>
+                 </div>
+
+                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                     <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Top 5 Produtos (Faturamento)</h3><div class="chart-container"><canvas id="topProductsChart"></canvas></div></div>
+                     <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Faturamento Mensal (Últimos 12 Meses)</h3><div class="chart-container"><canvas id="monthlySalesChart"></canvas></div></div>
+                 </div>
+            </div>
+
+            <!-- PÁGINA ESTOQUE -->
+            <div id="estoquePage" class="hidden">
+                <div class="glass-effect p-4 sm:p-6 rounded-lg">
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-5 gap-4 flex-wrap">
+                        <div class="flex flex-col sm:flex-row sm:flex-wrap items-center gap-2 w-full flex-grow">
+                            <input type="search" id="searchProdutoInput" placeholder="Pesquisar produto..." class="custom-input sm:w-auto flex-grow">
+                            <select id="filterCategoria" class="custom-select sm:w-auto flex-grow-0"><option value="todos">Todas Categorias</option></select>
+                            <select id="filterStatusEstoque" class="custom-select sm:w-auto flex-grow-0"><option value="todos">Todos Status</option><option value="ok">Em Estoque</option><option value="low">Estoque Baixo</option><option value="out">Esgotado</option></select>
                         </div>
-                        <div>
-                            <label for="sale-quantity" class="block text-sm font-medium mb-1" style="color: var(--text-primary);">Quantidade</label>
-                            <input type="number" id="sale-quantity" name="quantidade" required placeholder="0" min="1" class="custom-input">
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                             <button id="prepareShoppingListBtn" class="w-full sm:w-auto flex-shrink-0 bg-yellow-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-yellow-700 transition">Preparar Lista</button>
+                            <button id="addProdutoBtn" class="w-full sm:w-auto flex-shrink-0 bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition">Adicionar Produto</button>
                         </div>
-                        <div class="pt-4">
-                            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white" style="background-color: var(--accent-pink); hover:opacity-90;">
-                                Confirmar Venda
-                            </button>
-                        </div>
-                    </form>
-                    <div id="sale-feedback" class="mt-4 text-center"></div>
+                    </div>
+                    <div class="overflow-x-auto"><table class="min-w-full"><thead class="border-b" style="border-color: var(--border-color);"><tr><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Produto</th><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Marca</th><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Preço</th><th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider">Estoque</th><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th><th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider">Ações</th></tr></thead><tbody id="estoqueList"></tbody></table></div>
                 </div>
             </div>
 
-            <!-- Coluna Principal (Estoque e Vendas) -->
-            <div class="lg:col-span-2">
-                <div class="glass-effect p-4 sm:p-6 rounded-lg shadow-2xl">
-                    <div class="flex flex-col sm:flex-row justify-between items-center mb-5 gap-4">
-                        <div class="flex items-center gap-2 p-1 rounded-md flex-shrink-0" style="background-color: var(--btn-bg);">
-                            <button id="viewEstoqueBtn" class="px-3 py-1 text-sm rounded-md view-btn-active">Estoque</button>
-                            <button id="viewVendasBtn" class="px-3 py-1 text-sm rounded-md view-btn-inactive">Vendas</button>
-                        </div>
-                        <button id="refreshButton" class="action-btn p-2 rounded-full" title="Atualizar dados">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/></svg>
-                        </button>
-                    </div>
-                    
-                    <!-- Filtros -->
-                    <div id="estoqueFilters" class="flex flex-col sm:flex-row sm:flex-wrap items-center gap-2 w-full mb-5">
-                        <select id="filterCategoria" class="custom-select sm:w-auto">
-                            <option value="todos">Todas Categorias</option>
-                        </select>
-                        <select id="filterStatusEstoque" class="custom-select sm:w-auto">
-                            <option value="todos">Todos Status</option>
-                            <option value="ok">Em Estoque</option>
-                            <option value="low">Estoque Baixo</option>
-                            <option value="out">Esgotado</option>
-                        </select>
-                    </div>
-                     <div id="vendasFilters" class="hidden flex-col sm:flex-row sm:flex-wrap items-center gap-2 w-full mb-5">
-                        <input type="date" id="filterVendasDate" class="custom-input sm:w-auto">
-                    </div>
-
-                    <!-- Views Container -->
-                    <div>
-                        <!-- View de Estoque -->
-                        <div id="estoqueView">
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full">
-                                    <thead class="border-b" style="border-color: var(--border-color);">
-                                        <tr>
-                                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style="color: var(--text-secondary);">Produto</th>
-                                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style="color: var(--text-secondary);">Categoria</th>
-                                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style="color: var(--text-secondary);">Preço</th>
-                                            <th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider" style="color: var(--text-secondary);">Estoque</th>
-                                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style="color: var(--text-secondary);">Status</th>
-                                            <th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider" style="color: var(--text-secondary);">Ações</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="estoqueList"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <!-- View de Vendas -->
-                        <div id="vendasView" class="hidden">
-                             <div class="overflow-x-auto">
-                                <table class="min-w-full">
-                                    <thead class="border-b" style="border-color: var(--border-color);">
-                                        <tr>
-                                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style="color: var(--text-secondary);">Data</th>
-                                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style="color: var(--text-secondary);">Produto</th>
-                                            <th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider" style="color: var(--text-secondary);">Qtd.</th>
-                                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style="color: var(--text-secondary);">Total (R$)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="vendasList"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+            <!-- PÁGINA VENDAS -->
+            <div id="vendasPage" class="hidden">
+                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-1"><div class="glass-effect rounded-lg p-6 h-full flex flex-col"><h2 class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);">Registrar Venda</h2><div class="flex-grow space-y-4"><div class="flex items-end gap-2"><div class="relative flex-grow"><label class="block text-sm font-medium mb-1">Produto</label><input type="text" id="sale-product-search" placeholder="Pesquisar..." class="custom-input"><div id="sale-product-results" class="absolute z-10 w-full rounded-md mt-1 hidden max-h-40 overflow-y-auto border" style="border-color: var(--input-border);"><div class="search-results-option"></div></div></div><div class="flex-shrink-0"><label class="block text-sm font-medium mb-1">Qtd.</label><input type="number" id="sale-quantity" value="1" min="1" class="custom-input w-20 text-center"></div><button id="addToCartBtn" class="bg-blue-600 p-2 rounded-md text-white hover:bg-blue-700 h-10 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/></svg></button></div><div id="cart" class="border-t border-b py-2 space-y-2 flex-grow overflow-y-auto max-h-72" style="border-color: var(--border-color);"><ul id="cart-items" class="space-y-2"></ul></div></div><div class="mt-auto pt-4"><div class="flex justify-between font-bold text-lg mb-4"><span>TOTAL:</span><span id="cart-total">R$ 0,00</span></div><div id="paymentMethodGroup" class="payment-btn-group grid grid-cols-2 gap-2 mb-4"><button type="button" data-value="Crédito">Crédito</button><button type="button" data-value="Débito">Débito</button><button type="button" data-value="Dinheiro">Dinheiro</button><button type="button" data-value="Pix">Pix</button></div><button id="finalizeSaleBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-sm text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-500">Finalizar Venda</button><div id="sale-feedback" class="mt-4 text-center"></div></div></div></div>
+                    <div class="lg:col-span-2"><div class="glass-effect p-4 sm:p-6 rounded-lg"><div class="flex flex-col sm:flex-row justify-between items-center mb-5 gap-2 flex-wrap"><h2 class="text-xl font-semibold font-orbitron">Histórico de Vendas</h2><div class="flex items-center gap-2 flex-wrap"><label for="filterStartDate" class="text-sm">De:</label><input type="date" id="filterStartDate" class="custom-input w-auto"><label for="filterEndDate" class="text-sm">Até:</label><input type="date" id="filterEndDate" class="custom-input w-auto"><button id="filterTodayBtn" class="px-3 py-1.5 text-sm rounded-md" style="background-color: var(--btn-bg);">Hoje</button><button id="resetFilterBtn" class="px-3 py-1.5 text-sm rounded-md" style="background-color: var(--btn-bg);">Limpar</button></div></div><div class="overflow-x-auto"><table class="min-w-full"><thead class="border-b" style="border-color: var(--border-color);"><tr><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Data</th><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Itens</th><th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider">Pagamento</th><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Total</th><th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider">Ações</th></tr></thead><tbody id="vendasList"></tbody></table></div></div></div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Modal de Edição de Produto -->
-    <div id="editModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50">
-        <div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md">
-            <h2 class="text-2xl font-semibold mb-5 font-title" style="color: var(--text-title);">Editar Produto</h2>
-            <form id="editForm" class="space-y-4">
-                <input type="hidden" id="edit-id" name="id">
-                <input type="text" id="edit-nome" name="nome" required placeholder="Nome do Produto" class="custom-input">
-                <input type="text" id="edit-categoria" name="categoria" required placeholder="Categoria" class="custom-input">
-                <input type="number" id="edit-preco" name="preco" required placeholder="Preço (ex: 9.99)" step="0.01" min="0" class="custom-input">
-                <input type="number" id="edit-estoque" name="estoque" required placeholder="Quantidade em Estoque" step="1" min="0" class="custom-input">
-                <div class="flex gap-4 pt-4">
-                    <button type="button" id="cancelEdit" class="w-full justify-center py-2 px-4 border rounded-md shadow-sm text-sm font-medium" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button>
-                    <button type="submit" class="w-full justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white" style="background-color: var(--accent-pink);">Salvar Alterações</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal de Confirmação de Exclusão -->
-    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50">
-        <div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md text-center">
-            <h2 class="text-2xl font-semibold mb-5 text-yellow-400 font-title">Confirmar Exclusão</h2>
-            <p class="mb-6">Tem certeza de que deseja apagar este produto? Esta ação não pode ser desfeita.</p>
-            <div class="flex gap-4 pt-4">
-                <button type="button" id="cancelDelete" class="w-full justify-center py-2 px-4 border rounded-md shadow-sm text-sm font-medium" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button>
-                <button type="button" id="confirmDelete" class="w-full justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700">Apagar</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- MODAIS -->
+    <div id="addEditModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md"><h2 id="modalTitle" class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);"></h2><form id="addEditForm" class="space-y-4"><input type="hidden" id="edit-id"><div><label class="modal-label block text-sm font-medium">Nome do Produto</label><input type="text" id="edit-nome" required class="custom-input mt-1"></div><div class="grid grid-cols-2 gap-4"><div><label class="modal-label block text-sm font-medium">Marca</label><div class="relative"><input type="text" id="edit-marca" required class="custom-input mt-1"><div id="edit-marca-options" class="absolute z-10 w-full bg-gray-800 border border-gray-600 rounded-md mt-1 hidden max-h-40 overflow-y-auto"></div></div></div><div><label class="modal-label block text-sm font-medium">Categoria</label><div class="relative"><input type="text" id="edit-categoria" required class="custom-input mt-1"><div id="edit-categoria-options" class="absolute z-10 w-full bg-gray-800 border border-gray-600 rounded-md mt-1 hidden max-h-40 overflow-y-auto"></div></div></div></div><div class="grid grid-cols-2 gap-4"><div><label class="modal-label block text-sm font-medium">Preço</label><input type="number" id="edit-preco" required step="0.01" min="0" class="custom-input mt-1"></div><div><label class="modal-label block text-sm font-medium">Estoque Mínimo</label><input type="number" id="edit-estoqueMinimo" required step="1" min="0" class="custom-input mt-1"></div></div><div class="grid grid-cols-2 gap-4"><div><label class="modal-label block text-sm font-medium">Estoque Atual</label><input type="number" id="edit-estoque" required step="1" min="0" class="custom-input mt-1"></div><div><label class="modal-label block text-sm font-medium">Unidade</label><select id="edit-unidade" class="custom-select mt-1"><option>Unidade</option><option>Caixa</option><option>Pacote</option><option>Kg</option></select></div></div><div class="flex gap-4 pt-4"><button type="button" id="cancelEdit" class="w-full justify-center py-2 px-4 border rounded-md shadow-sm text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md shadow-sm text-sm text-white bg-blue-600 hover:bg-blue-700">Salvar</button></div></form></div></div>
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md text-center"><h2 class="text-2xl font-semibold mb-5 text-yellow-400 font-orbitron">Confirmar Exclusão</h2><p class="mb-6">Tem certeza de que deseja apagar este produto?</p><div class="flex gap-4 pt-4"><button type="button" id="cancelDelete" class="w-full justify-center py-2 px-4 border rounded-md shadow-sm text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="button" id="confirmDelete" class="w-full justify-center py-2 px-4 border-transparent rounded-md shadow-sm text-sm text-white bg-red-600 hover:bg-red-700">Apagar</button></div></div></div>
+    <div id="restockModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-sm"><h2 class="text-2xl font-semibold mb-2 font-orbitron" style="color: var(--text-title);">Repor Estoque</h2><p id="restockProductName" class="mb-4 text-gray-400"></p><form id="restockForm"><input type="hidden" id="restock-id"><label class="modal-label block text-sm font-medium">Quantidade a adicionar</label><input type="number" id="restock-quantity" min="1" required class="custom-input mt-1"><div class="flex gap-4 pt-4"><button type="button" id="cancelRestock" class="w-full justify-center py-2 px-4 border rounded-md text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-sm text-white bg-blue-600 hover:bg-blue-700">Confirmar</button></div></form></div></div>
+    <div id="shoppingListModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-2xl flex flex-col h-full max-h-[90vh]"><h2 class="text-2xl font-semibold mb-4 font-orbitron text-center" style="color: var(--text-title);">Preparar Lista de Compras</h2><div class="flex-grow overflow-y-auto pr-2"><ul id="editableShoppingList" class="space-y-2"></ul></div><div class="pt-4 border-t" style="border-color: var(--border-color);"><h3 class="font-semibold mb-2">Adicionar Item</h3><form id="addShoppingItemForm" class="grid grid-cols-1 md:grid-cols-2 gap-2 items-end"><div class="relative"><label class="modal-label text-xs">Buscar Item Cadastrado</label><input type="text" id="shopping-item-search" placeholder="Pesquisar..." class="custom-input w-full"><div id="shopping-item-results" class="absolute z-20 w-full rounded-md mt-1 hidden max-h-40 overflow-y-auto border" style="border-color: var(--input-border);"></div></div><div class="flex items-end gap-2"><div class="flex-grow"><label class="modal-label text-xs">Qtd.</label><input type="number" id="shopping-item-qty" value="1" min="1" class="custom-input"></div><button type="submit" class="bg-blue-600 p-2 rounded-md text-white hover:bg-blue-700 h-10">Adicionar</button></div></form></div><div class="flex gap-4 pt-6 mt-auto"><button type="button" id="closeShoppingListModal" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Fechar</button><button type="button" id="exportShoppingListPdfBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-green-600 hover:bg-green-700">Salvar e Exportar PDF</button></div></div></div>
+    <div id="confirmSaleModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md text-center"><h2 class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);">Confirmar Venda</h2><p class="mb-6">Deseja realmente finalizar esta venda?</p><div class="flex gap-4 pt-4"><button type="button" id="cancelSale" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="button" id="confirmSale" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-green-600 hover:bg-green-700">Confirmar</button></div></div></div>
+    <div id="passwordModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-sm"><h2 class="text-2xl font-semibold mb-4 font-orbitron" style="color: var(--text-title);">Acesso Restrito</h2><p class="text-sm mb-4">Digite a senha para editar a venda.</p><form id="passwordForm"><input type="password" id="passwordInput" class="custom-input w-full"><p id="passwordError" class="text-red-500 text-xs mt-1 h-4"></p><div class="flex gap-4 pt-4"><button type="button" id="cancelPassword" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700">Entrar</button></div></form></div></div>
+    
     <script type="module">
-        // --- Configuração da API (Simulada) ---
-        // Em um projeto real, substitua isso pela URL da sua API (ex: NocoDB, Supabase, etc.)
-        const API_URL = 'https://api.example.com'; 
-        const API_TOKEN = 'your_api_token';
-        const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_TOKEN}` };
+        const { jsPDF } = window.jspdf;
+        // --- DADOS DE DEMONSTRAÇÃO ---
+        let mockProdutos = [ { Id: 1, nome: 'Brigadeiro Gourmet', categoria: 'Doces', marca: 'Lumi', unidade: 'Unidade', preco: 4.50, estoque: 50, estoqueMinimo: 10 }, { Id: 2, nome: 'Caixa de Bombom', categoria: 'Chocolates', marca: 'Nestlé', unidade: 'Caixa', preco: 25.00, estoque: 8, estoqueMinimo: 5 }, { Id: 3, nome: 'Bala de Goma (100g)', categoria: 'Balas', marca: 'Fini', unidade: 'Pacote', preco: 6.00, estoque: 80, estoqueMinimo: 20 }, { Id: 4, nome: 'Pirulito Colorido', categoria: 'Balas', marca: 'Lumi', unidade: 'Unidade', preco: 1.50, estoque: 120, estoqueMinimo: 50 }, { Id: 5, nome: 'Barra de Chocolate Amargo', categoria: 'Chocolates', marca: 'Cacau Show', unidade: 'Unidade', preco: 12.00, estoque: 0, estoqueMinimo: 10 }, { Id: 6, nome: 'Paçoca', categoria: 'Doces', marca: 'Santa Helena', unidade: 'Unidade', preco: 2.00, estoque: 45, estoqueMinimo: 15 }, ];
+        let mockVendas = [ { Id: 101, items: [{produtoId: 3, produtoNome: "Bala de Goma (100g)", quantidade: 2, precoUnitario: 6.00}], total: 12.00, formaPagamento: 'Débito', data: '2025-07-23T10:00:00Z' }, { Id: 102, items: [{produtoId: 1, produtoNome: "Brigadeiro Gourmet", quantidade: 5, precoUnitario: 4.50}], total: 22.50, formaPagamento: 'Pix', data: '2025-08-15T14:30:00Z' }, { Id: 103, items: [{produtoId: 2, produtoNome: "Caixa de Bombom", quantidade: 1, precoUnitario: 25.00}, {produtoId: 4, produtoNome: "Pirulito Colorido", quantidade: 10, precoUnitario: 1.50}], total: 40.00, formaPagamento: 'Crédito', data: '2025-09-24T18:00:00Z' }, ];
+        let nextProductId = 7, nextVendaId = 104;
+        
+        // --- API SIMULADA ---
+        const api = { getProdutos: async () => ({ list: [...mockProdutos] }), getVendas: async () => ({ list: [...mockVendas] }), patchProduto: async (id, data) => { const i = mockProdutos.findIndex(p=>p.Id===id); if(i>-1){ mockProdutos[i]={...mockProdutos[i],...data}; return mockProdutos[i]; } throw new Error("Produto não encontrado."); }, postProduto: async (data) => { const newProd = { ...data, Id: nextProductId++ }; mockProdutos.push(newProd); return newProd; }, deleteProduto: async (id) => { mockProdutos = mockProdutos.filter(p=>p.Id!==id); return { success: true }; }, postVenda: async (data) => { const newSale = { ...data, Id: nextVendaId++ }; mockVendas.push(newSale); return newSale; }, patchVenda: async(id, data) => { const i = mockVendas.findIndex(v=>v.Id===id); if(i>-1){ mockVendas[i]={...mockVendas[i],...data}; return mockVendas[i];} throw new Error("Venda não encontrada.")} };
 
-        // --- Dados de Demonstração (Simulando um Banco de Dados) ---
-        let mockProdutos = [
-            { Id: 1, nome: 'Brigadeiro Gourmet', categoria: 'Doces', preco: 4.50, estoque: 50 },
-            { Id: 2, nome: 'Caixa de Bombom', categoria: 'Chocolates', preco: 25.00, estoque: 8 },
-            { Id: 3, nome: 'Bala de Goma (100g)', categoria: 'Balas', preco: 6.00, estoque: 80 },
-            { Id: 4, nome: 'Pirulito Colorido', categoria: 'Balas', preco: 1.50, estoque: 120 },
-            { Id: 5, nome: 'Barra de Chocolate Amargo', categoria: 'Chocolates', preco: 12.00, estoque: 0 },
-            { Id: 6, nome: 'Paçoca', categoria: 'Doces', preco: 2.00, estoque: 45 },
-        ];
-        let mockVendas = [
-            { Id: 101, produtoId: 3, produtoNome: "Bala de Goma (100g)", quantidade: 2, total: 12.00, data: '2025-09-23T10:00:00Z' },
-            { Id: 102, produtoId: 1, produtoNome: "Brigadeiro Gourmet", quantidade: 5, total: 22.50, data: '2025-09-24T14:30:00Z' },
-        ];
-        let nextProductId = 7;
-        let nextVendaId = 103;
+        // --- ESTADO DA APLICAÇÃO ---
+        let allProdutos = [], allVendas = [], currentCart = [];
+        let charts = {};
+        let selectedProductForSale = null;
+        let saleToEditId = null;
 
-        // --- Estado da Aplicação ---
-        let allProdutos = [];
-        let allVendas = [];
-        let currentView = 'estoque'; // 'estoque' ou 'vendas'
-        const LOW_STOCK_THRESHOLD = 10;
-
-        // --- Seletores de UI ---
+        // --- SELETORES DE UI ---
+        const pageDashboardBtn = document.getElementById('pageDashboardBtn'), pageEstoqueBtn = document.getElementById('pageEstoqueBtn'), pageVendasBtn = document.getElementById('pageVendasBtn');
         const themeToggleBtn = document.getElementById('themeToggleBtn');
-        const sunIcon = document.getElementById('theme-icon-sun');
-        const moonIcon = document.getElementById('theme-icon-moon');
-        const viewEstoqueBtn = document.getElementById('viewEstoqueBtn');
-        const viewVendasBtn = document.getElementById('viewVendasBtn');
-        const estoqueView = document.getElementById('estoqueView');
-        const vendasView = document.getElementById('vendasView');
-        const estoqueList = document.getElementById('estoqueList');
-        const vendasList = document.getElementById('vendasList');
-        const refreshButton = document.getElementById('refreshButton');
-        
-        // Modals
-        const editModal = document.getElementById('editModal');
-        const editForm = document.getElementById('editForm');
-        const cancelEdit = document.getElementById('cancelEdit');
-        const deleteModal = document.getElementById('deleteModal');
-        const cancelDelete = document.getElementById('cancelDelete');
-        const confirmDelete = document.getElementById('confirmDelete');
+        const sunIcon = document.getElementById('theme-icon-sun'), moonIcon = document.getElementById('theme-icon-moon');
+        const addProdutoBtn = document.getElementById('addProdutoBtn');
+        const addEditModal = document.getElementById('addEditModal'), modalTitle = document.getElementById('modalTitle'), addEditForm = document.getElementById('addEditForm'), cancelEdit = document.getElementById('cancelEdit');
+        const deleteModal = document.getElementById('deleteModal'), cancelDelete = document.getElementById('cancelDelete'), confirmDelete = document.getElementById('confirmDelete');
+        const restockModal = document.getElementById('restockModal'), restockForm = document.getElementById('restockForm'), cancelRestock = document.getElementById('cancelRestock');
+        const shoppingListModal = document.getElementById('shoppingListModal'), editableShoppingList = document.getElementById('editableShoppingList'), addShoppingItemForm = document.getElementById('addShoppingItemForm'), closeShoppingListModal = document.getElementById('closeShoppingListModal'), exportShoppingListPdfBtn = document.getElementById('exportShoppingListPdfBtn'), prepareShoppingListBtn = document.getElementById('prepareShoppingListBtn');
+        const shoppingItemSearch = document.getElementById('shopping-item-search'), shoppingItemResults = document.getElementById('shopping-item-results');
+        const confirmSaleModal = document.getElementById('confirmSaleModal'), cancelSale = document.getElementById('cancelSale'), confirmSale = document.getElementById('confirmSale');
+        const passwordModal = document.getElementById('passwordModal'), passwordForm = document.getElementById('passwordForm'), cancelPassword = document.getElementById('cancelPassword');
+        const estoqueList = document.getElementById('estoqueList'), vendasList = document.getElementById('vendasList');
+        const saleProductSearchInput = document.getElementById('sale-product-search'), saleProductResults = document.getElementById('sale-product-results');
+        const saleQuantityInput = document.getElementById('sale-quantity'), addToCartBtn = document.getElementById('addToCartBtn'), cartItemsList = document.getElementById('cart-items'), cartTotalEl = document.getElementById('cart-total'), finalizeSaleBtn = document.getElementById('finalizeSaleBtn');
+        const saleFeedback = document.getElementById('sale-feedback'), paymentMethodGroup = document.getElementById('paymentMethodGroup');
+        const filterCategoria = document.getElementById('filterCategoria'), filterStatusEstoque = document.getElementById('filterStatusEstoque'), searchProdutoInput = document.getElementById('searchProdutoInput');
+        const filterStartDate = document.getElementById('filterStartDate'), filterEndDate = document.getElementById('filterEndDate');
+        const filterTodayBtn = document.getElementById('filterTodayBtn'), resetFilterBtn = document.getElementById('resetFilterBtn');
+        const dashboardFilterStartDate = document.getElementById('dashboardFilterStartDate'), dashboardFilterEndDate = document.getElementById('dashboardFilterEndDate');
 
-        // Forms e Filtros
-        const salesForm = document.getElementById('salesForm');
-        const saleProductSelect = document.getElementById('sale-product');
-        const saleFeedback = document.getElementById('sale-feedback');
-        const estoqueFilters = document.getElementById('estoqueFilters');
-        const vendasFilters = document.getElementById('vendasFilters');
-        const filterCategoria = document.getElementById('filterCategoria');
-        const filterStatusEstoque = document.getElementById('filterStatusEstoque');
-        const filterVendasDate = document.getElementById('filterVendasDate');
+        // --- FUNÇÕES UTILITÁRIAS ---
+        const formatCurrency = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+        const getStockStatus = (p) => p.estoque === 0 ? { k: 'out', t: 'Esgotado', c: 'stock-status-out' } : p.estoque <= p.estoqueMinimo ? { k: 'low', t: 'Estoque Baixo', c: 'stock-status-low' } : { k: 'ok', t: 'Em Estoque', c: 'stock-status-ok' };
 
-        // --- Funções da API (Simuladas) ---
-        const api = {
-            getProdutos: async () => { console.log('API: GET Produtos'); return { list: [...mockProdutos] }; },
-            getVendas: async () => { console.log('API: GET Vendas'); return { list: [...mockVendas] }; },
-            patchProduto: async (id, data) => {
-                console.log('API: PATCH Produto', id, data);
-                const index = mockProdutos.findIndex(p => p.Id === id);
-                if (index > -1) {
-                    mockProdutos[index] = { ...mockProdutos[index], ...data };
-                    return mockProdutos[index];
-                }
-                throw new Error("Produto não encontrado.");
-            },
-            deleteProduto: async (id) => {
-                console.log('API: DELETE Produto', id);
-                mockProdutos = mockProdutos.filter(p => p.Id !== id);
-                return { success: true };
-            },
-            postVenda: async (data) => {
-                console.log('API: POST Venda', data);
-                const novaVenda = { ...data, Id: nextVendaId++ };
-                mockVendas.push(novaVenda);
-                return novaVenda;
-            }
+        // --- LÓGICA DE RENDERIZAÇÃO ---
+        const renderEstoqueView = (prods) => {
+            estoqueList.innerHTML = prods.length ? prods.map(p => {
+                const s = getStockStatus(p);
+                return `<tr class="border-b" style="border-color: var(--border-color);"><td class="px-4 py-3 text-sm font-medium">${p.nome}</td><td class="px-4 py-3 text-sm text-gray-400">${p.marca}</td><td class="px-4 py-3 text-sm text-gray-400">${formatCurrency(p.preco)}</td><td class="px-4 py-3 text-sm text-center text-gray-400">${p.estoque} ${p.unidade}</td><td class="px-4 py-3 text-sm"><span class="stock-status ${s.c}"><span class="status-dot" style="background-color: currentColor;"></span>${s.t}</span></td><td class="px-4 py-3 text-center"><div class="flex items-center justify-center gap-1"><button class="action-btn restock-btn" data-id="${p.Id}" data-name="${p.nome}" title="Repor Estoque"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="pointer-events-none text-green-400" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/></svg></button><button class="action-btn edit-btn" data-item='${JSON.stringify(p)}' title="Editar"><svg class="pointer-events-none text-blue-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V12h2.293z"/></svg></button><button class="action-btn delete-btn" data-id="${p.Id}" title="Apagar"><svg class="pointer-events-none text-red-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/></svg></button></div></td></tr>`;
+            }).join('') : `<tr><td colspan="6" class="p-4 text-center">Nenhum produto encontrado.</td></tr>`;
         };
 
-        // --- Funções Utilitárias ---
-        const formatDate = (isoDate) => new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(isoDate));
-        const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        const renderVendasView = (vendas) => {
+            vendasList.innerHTML = vendas.length ? vendas.sort((a, b) => new Date(b.data) - new Date(a.data)).map(v => `<tr class="border-b" style="border-color: var(--border-color);"><td class="px-4 py-3 text-sm">${new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(v.data))}</td><td class="px-4 py-3 text-sm text-gray-400">${v.items.map(i => `${i.quantidade}x ${i.produtoNome}`).join(', ')}</td><td class="px-4 py-3 text-sm text-center text-gray-400">${v.formaPagamento}</td><td class="px-4 py-3 text-sm text-gray-400">${formatCurrency(v.total)}</td><td class="px-4 py-3 text-center"><button class="action-btn edit-sale-btn" data-id="${v.Id}" title="Editar Venda"><svg class="pointer-events-none text-blue-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V12h2.293z"/></svg></button></td></tr>`).join('') : `<tr><td colspan="5" class="p-4 text-center">Nenhuma venda encontrada.</td></tr>`;
+        };
+        
+        const renderDashboard = (vendasData, produtosData) => {
+            document.getElementById('metricTotalRevenue').textContent = formatCurrency(vendasData.reduce((s, v) => s + v.total, 0));
+            document.getElementById('metricItemsSold').textContent = vendasData.reduce((s, v) => s + v.items.reduce((si, i) => si + i.quantidade, 0), 0);
+            document.getElementById('metricTotalSales').textContent = vendasData.length;
+            const totalRevenue = vendasData.reduce((s, v) => s + v.total, 0);
+            document.getElementById('metricAvgTicket').textContent = vendasData.length ? formatCurrency(totalRevenue / vendasData.length) : formatCurrency(0);
 
-        const getStockStatus = (estoque) => {
-            if (estoque === 0) return { key: 'out', text: 'Esgotado', class: 'stock-status-out' };
-            if (estoque <= LOW_STOCK_THRESHOLD) return { key: 'low', text: 'Estoque Baixo', class: 'stock-status-low' };
-            return { key: 'ok', text: 'Em Estoque', class: 'stock-status-ok' };
+            const categoryCounts = produtosData.reduce((acc, p) => { acc[p.categoria] = (acc[p.categoria] || 0) + 1; return acc; }, {});
+            document.getElementById('categoryProductCount').innerHTML = Object.entries(categoryCounts).map(([cat, count]) => `<div class="glass-effect p-3 rounded-lg text-center"><p class="text-xs font-semibold text-gray-400 uppercase">${cat}</p><p class="text-xl font-bold">${count}</p></div>`).join('');
+            
+            const paymentData = vendasData.reduce((acc, v) => { acc[v.formaPagamento] = (acc[v.formaPagamento] || 0) + v.total; return acc; }, {});
+            document.getElementById('paymentMethodCards').innerHTML = ['Crédito', 'Débito', 'Pix', 'Dinheiro'].map(method => `<div class="glass-effect p-4 rounded-lg text-center"><h4 class="text-sm font-semibold text-gray-400 uppercase">${method}</h4><p class="text-xl font-bold">${formatCurrency(paymentData[method] || 0)}</p></div>`).join('');
+            
+            const renderChart = (id, type, data, options) => { if (charts[id]) charts[id].destroy(); charts[id] = new Chart(document.getElementById(id).getContext('2d'), { type, data, options }); };
+            
+            const categoryData = vendasData.reduce((acc, v) => { v.items.forEach(i => { const p = allProdutos.find(prod => prod.Id === i.produtoId); if (p) acc[p.categoria] = (acc[p.categoria] || 0) + (i.quantidade * i.precoUnitario); }); return acc; }, {});
+            renderChart('categorySalesChart', 'doughnut', { labels: Object.keys(categoryData), datasets: [{ data: Object.values(categoryData), backgroundColor: ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'], borderWidth: 0, hoverOffset: 8 }] }, { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: Chart.defaults.color } }, tooltip: { callbacks: { label: (c) => `${c.label}: ${formatCurrency(c.raw)}` } } } });
+            
+            const topProductsData = vendasData.reduce((acc, v) => { v.items.forEach(i => { acc[i.produtoNome] = (acc[i.produtoNome] || 0) + (i.quantidade * i.precoUnitario); }); return acc; }, {});
+            const sortedProducts = Object.entries(topProductsData).sort(([,a],[,b]) => b-a).slice(0, 5);
+            renderChart('topProductsChart', 'bar', { labels: sortedProducts.map(p=>p[0]), datasets: [{ label: 'Faturamento', data: sortedProducts.map(p=>p[1]), backgroundColor: '#3b82f6', borderRadius: 4 }] }, { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => formatCurrency(ctx.raw) } } }, scales: { x: { ticks: { color: Chart.defaults.color, callback: (v) => formatCurrency(v) }, grid: { color: Chart.defaults.borderColor } }, y: { ticks: { color: Chart.defaults.color }, grid: { display: false } } } });
+            
+            const salesByWeekday = Array(7).fill(0); const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            vendasData.forEach(v => { const day = new Date(v.data).getDay(); salesByWeekday[day] += v.total; });
+            renderChart('salesByWeekdayChart', 'bar', { labels: weekdays, datasets: [{ label: 'Faturamento', data: salesByWeekday, backgroundColor: ['#8b5cf6', '#3b82f6', '#10b981', '#ef4444', '#f59e0b', '#3b82f6', '#8b5cf6'], borderRadius: 4 }] }, { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => formatCurrency(ctx.raw) } } }, scales: { x: { ticks: { color: Chart.defaults.color }, grid: { display: false } }, y: { ticks: { color: Chart.defaults.color, callback: (v) => formatCurrency(v) }, grid: { color: Chart.defaults.borderColor } } } });
+            
+            const monthlySales = {};
+            for(let i=0; i < 12; i++) { const d = new Date(); d.setMonth(d.getMonth() - i); monthlySales[`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`] = 0; }
+            vendasData.forEach(v => { const d = new Date(v.data); const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; if(monthlySales.hasOwnProperty(key)) monthlySales[key] += v.total; });
+            const sortedMonths = Object.entries(monthlySales).reverse();
+            renderChart('monthlySalesChart', 'line', { labels: sortedMonths.map(m=>m[0]), datasets: [{ label: 'Faturamento Mensal', data: sortedMonths.map(m=>m[1]), borderColor: '#10b981', tension: 0.1, fill: false }] }, { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => formatCurrency(ctx.raw) } } }, scales: { x: { ticks: { color: Chart.defaults.color }, grid: { color: Chart.defaults.borderColor } }, y: { ticks: { color: Chart.defaults.color, callback: (v) => formatCurrency(v) }, grid: { color: Chart.defaults.borderColor } } } });
+        };
+        
+        const applyFiltersAndRender = () => {
+            let filteredProds = [...allProdutos];
+            if(searchProdutoInput.value) filteredProds = filteredProds.filter(p => p.nome.toLowerCase().includes(searchProdutoInput.value.toLowerCase()));
+            if(filterCategoria.value !== 'todos') filteredProds = filteredProds.filter(p => p.categoria === filterCategoria.value);
+            if(filterStatusEstoque.value !== 'todos') filteredProds = filteredProds.filter(p => getStockStatus(p).k === filterStatusEstoque.value);
+            renderEstoqueView(filteredProds);
+
+            let filteredVendas = [...allVendas];
+            if (filterStartDate.value) filteredVendas = filteredVendas.filter(v => new Date(v.data) >= new Date(filterStartDate.value + 'T00:00:00'));
+            if (filterEndDate.value) filteredVendas = filteredVendas.filter(v => new Date(v.data) <= new Date(filterEndDate.value + 'T23:59:59'));
+            renderVendasView(filteredVendas);
+            
+            let dashboardVendas = [...allVendas];
+            if (dashboardFilterStartDate.value) dashboardVendas = dashboardVendas.filter(v => new Date(v.data) >= new Date(dashboardFilterStartDate.value + 'T00:00:00'));
+            if (dashboardFilterEndDate.value) dashboardVendas = dashboardVendas.filter(v => new Date(v.data) <= new Date(dashboardFilterEndDate.value + 'T23:59:59'));
+            renderDashboard(dashboardVendas, allProdutos);
+        };
+        
+        const populateFiltersAndForms = () => {
+            const categorias = [...new Set(allProdutos.map(p => p.categoria))].sort();
+            filterCategoria.innerHTML = '<option value="todos">Todas Categorias</option>' + categorias.map(c => `<option value="${c}">${c}</option>`).join('');
+        };
+        
+        const loadData = async () => { try { const [prods, vendas] = await Promise.all([api.getProdutos(), api.getVendas()]); allProdutos = prods.list || []; allVendas = vendas.list || []; populateFiltersAndForms(); applyFiltersAndRender(); } catch (error) { console.error("Erro ao carregar dados:", error); } };
+        
+        const switchPage = (pageId) => {
+            ['Dashboard', 'Estoque', 'Vendas'].forEach(p => { document.getElementById(`${p.toLowerCase()}Page`).classList.add('hidden'); document.getElementById(`page${p}Btn`).classList.remove('page-btn-active'); });
+            document.getElementById(`${pageId.toLowerCase()}Page`).classList.remove('hidden'); document.getElementById(`page${pageId}Btn`).classList.add('page-btn-active');
         };
 
-        // --- Lógica de Renderização ---
-        function renderEstoqueView(produtos) {
-            estoqueList.innerHTML = '';
-            if (produtos.length === 0) {
-                estoqueList.innerHTML = `<tr><td colspan="6" class="p-4 text-center">Nenhum produto encontrado.</td></tr>`;
-                return;
-            }
-            produtos.forEach(p => {
-                const status = getStockStatus(p.estoque);
-                const row = document.createElement('tr');
-                row.className = "border-b";
-                row.style.borderColor = 'var(--border-color)';
-                row.innerHTML = `
-                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">${p.nome}</td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm" style="color: var(--text-secondary);">${p.categoria}</td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm" style="color: var(--text-secondary);">${formatCurrency(p.preco)}</td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm text-center" style="color: var(--text-secondary);">${p.estoque}</td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm">
-                        <span class="stock-status ${status.class}">
-                            <span class="status-dot" style="background-color: currentColor;"></span>
-                            ${status.text}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3 whitespace-nowrap text-center text-sm font-medium">
-                       <div class="flex items-center justify-center gap-2">
-                            <button class="action-btn edit-btn" data-item='${JSON.stringify(p)}' title="Editar"><svg class="pointer-events-none text-blue-500" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V12h2.293z"/></svg></button>
-                            <button class="action-btn delete-btn" data-id="${p.Id}" title="Apagar"><svg class="pointer-events-none text-red-500" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/></svg></button>
-                       </div>
-                    </td>`;
-                estoqueList.appendChild(row);
-            });
-        }
+        const createSearchableDropdown = (inputId, optionsDivId, options) => {
+            const input = document.getElementById(inputId);
+            const optionsDiv = document.getElementById(optionsDivId);
+            const renderOptions = (filter) => {
+                optionsDiv.innerHTML = options.filter(o => o.toLowerCase().includes(filter.toLowerCase())).map(o => `<div class="p-2 hover:bg-gray-700 cursor-pointer search-results-option">${o}</div>`).join('');
+            };
+            input.addEventListener('focus', () => { renderOptions(input.value); optionsDiv.classList.remove('hidden'); });
+            input.addEventListener('input', () => renderOptions(input.value));
+            optionsDiv.addEventListener('click', (e) => { if(e.target.tagName === 'DIV'){ input.value = e.target.textContent; optionsDiv.classList.add('hidden'); } });
+            document.addEventListener('click', (e) => { if (!input.contains(e.target) && !optionsDiv.contains(e.target)) optionsDiv.classList.add('hidden'); });
+        };
         
-        function renderVendasView(vendas) {
-            vendasList.innerHTML = '';
-            if (vendas.length === 0) {
-                vendasList.innerHTML = `<tr><td colspan="4" class="p-4 text-center">Nenhuma venda encontrada.</td></tr>`;
-                return;
-            }
-            // Ordenar vendas da mais recente para a mais antiga
-            vendas.sort((a, b) => new Date(b.data) - new Date(a.data)).forEach(v => {
-                 const row = document.createElement('tr');
-                row.className = "border-b";
-                row.style.borderColor = 'var(--border-color)';
-                row.innerHTML = `
-                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">${formatDate(v.data)}</td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm" style="color: var(--text-secondary);">${v.produtoNome}</td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm text-center" style="color: var(--text-secondary);">${v.quantidade}</td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm" style="color: var(--text-secondary);">${formatCurrency(v.total)}</td>
-                `;
-                vendasList.appendChild(row);
-            });
-        }
+        addProdutoBtn.addEventListener('click', () => { modalTitle.textContent = "Adicionar Novo Produto"; addEditForm.reset(); addEditForm['edit-id'].value = ''; addEditModal.classList.remove('hidden'); createSearchableDropdown('edit-marca', 'edit-marca-options', [...new Set(allProdutos.map(p => p.marca))]); createSearchableDropdown('edit-categoria', 'edit-categoria-options', [...new Set(allProdutos.map(p => p.categoria))]); });
 
-        // --- Lógica de Filtros e Visualização ---
-        function applyFiltersAndRender() {
-            if (currentView === 'estoque') {
-                let filteredProdutos = [...allProdutos];
-                if (filterCategoria.value !== 'todos') {
-                    filteredProdutos = filteredProdutos.filter(p => p.categoria === filterCategoria.value);
-                }
-                if (filterStatusEstoque.value !== 'todos') {
-                    filteredProdutos = filteredProdutos.filter(p => getStockStatus(p.estoque).key === filterStatusEstoque.value);
-                }
-                renderEstoqueView(filteredProdutos);
-            } else { // view === 'vendas'
-                let filteredVendas = [...allVendas];
-                if (filterVendasDate.value) {
-                    const selectedDate = filterVendasDate.value;
-                    filteredVendas = filteredVendas.filter(v => v.data.startsWith(selectedDate));
-                }
-                renderVendasView(filteredVendas);
-            }
-        }
-        
-        function populateFiltersAndForms() {
-            // Categoria filter
-            const categorias = [...new Set(allProdutos.map(p => p.categoria))];
-            filterCategoria.innerHTML = '<option value="todos">Todas Categorias</option>';
-            categorias.forEach(c => filterCategoria.innerHTML += `<option value="${c}">${c}</option>`);
-            
-            // Sales form product select
-            saleProductSelect.innerHTML = '<option value="" disabled selected>Selecione um produto</option>';
-            allProdutos
-              .filter(p => p.estoque > 0)
-              .forEach(p => {
-                saleProductSelect.innerHTML += `<option value="${p.Id}">${p.nome} (Estoque: ${p.estoque})</option>`;
-            });
-        }
-        
-        // --- Funções de Carregamento de Dados ---
-        async function loadData() {
-            estoqueList.innerHTML = `<tr><td colspan="6" class="p-4 text-center">Carregando dados...</td></tr>`;
-            try {
-                const [produtosRes, vendasRes] = await Promise.all([api.getProdutos(), api.getVendas()]);
-                allProdutos = produtosRes.list || [];
-                allVendas = vendasRes.list || [];
-                
-                populateFiltersAndForms();
-                applyFiltersAndRender();
-            } catch (error) {
-                console.error("Erro ao carregar dados:", error);
-                estoqueList.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-500">Falha ao carregar dados.</td></tr>`;
-            }
-        }
-
-        // --- Gerenciamento de Eventos ---
-        
-        // Trocar de Visualização
-        function switchView(viewName) {
-            currentView = viewName;
-            const isEstoque = viewName === 'estoque';
-            
-            estoqueView.classList.toggle('hidden', !isEstoque);
-            vendasView.classList.toggle('hidden', isEstoque);
-            estoqueFilters.classList.toggle('hidden', !isEstoque);
-            vendasFilters.classList.toggle('hidden', isEstoque);
-
-            viewEstoqueBtn.classList.toggle('view-btn-active', isEstoque);
-            viewEstoqueBtn.classList.toggle('view-btn-inactive', !isEstoque);
-            viewVendasBtn.classList.toggle('view-btn-active', !isEstoque);
-            viewVendasBtn.classList.toggle('view-btn-inactive', isEstoque);
-            
-            applyFiltersAndRender();
-        }
-        viewEstoqueBtn.addEventListener('click', () => switchView('estoque'));
-        viewVendasBtn.addEventListener('click', () => switchView('vendas'));
-        
-        // Ações da Tabela de Estoque
         estoqueList.addEventListener('click', (e) => {
-            const button = e.target.closest('button');
-            if (!button) return;
-            
-            if (button.classList.contains('delete-btn')) {
-                confirmDelete.dataset.id = button.dataset.id;
-                deleteModal.classList.remove('hidden');
-            } else if (button.classList.contains('edit-btn')) {
-                const itemData = JSON.parse(button.dataset.item);
-                editForm.id.value = itemData.Id;
-                editForm.nome.value = itemData.nome;
-                editForm.categoria.value = itemData.categoria;
-                editForm.preco.value = itemData.preco;
-                editForm.estoque.value = itemData.estoque;
-                editModal.classList.remove('hidden');
-            }
-        });
-
-        // Submissão do Formulário de Edição
-        editForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = parseInt(editForm.id.value);
-            const data = {
-                nome: editForm.nome.value,
-                categoria: editForm.categoria.value,
-                preco: parseFloat(editForm.preco.value),
-                estoque: parseInt(editForm.estoque.value),
-            };
-            
-            try {
-                await api.patchProduto(id, data);
-                editModal.classList.add('hidden');
-                await loadData(); // Recarrega tudo para refletir as mudanças
-            } catch (error) {
-                console.error("Erro ao salvar produto:", error);
-                alert("Falha ao salvar produto.");
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            if (btn.classList.contains('delete-btn')) { confirmDelete.dataset.id = btn.dataset.id; deleteModal.classList.remove('hidden'); }
+            else if (btn.classList.contains('edit-btn')) {
+                modalTitle.textContent = "Editar Produto";
+                const item = JSON.parse(btn.dataset.item);
+                for(const key in item) { if(addEditForm.elements[`edit-${key}`]) addEditForm.elements[`edit-${key}`].value = item[key]; }
+                addEditForm.elements['edit-id'].value = item.Id;
+                addEditModal.classList.remove('hidden');
+                createSearchableDropdown('edit-marca', 'edit-marca-options', [...new Set(allProdutos.map(p => p.marca))]);
+                createSearchableDropdown('edit-categoria', 'edit-categoria-options', [...new Set(allProdutos.map(p => p.categoria))]);
+            } else if (btn.classList.contains('restock-btn')) {
+                restockForm.elements['restock-id'].value = btn.dataset.id;
+                document.getElementById('restockProductName').textContent = btn.dataset.name;
+                restockModal.classList.remove('hidden');
             }
         });
         
-        // Confirmação de Exclusão
-        confirmDelete.addEventListener('click', async () => {
-            const id = parseInt(confirmDelete.dataset.id);
-            try {
-                await api.deleteProduto(id);
-                deleteModal.classList.add('hidden');
-                await loadData();
-            } catch (error) {
-                console.error("Erro ao apagar produto:", error);
-                alert("Falha ao apagar produto.");
-            }
-        });
+        addEditForm.addEventListener('submit', async (e) => { e.preventDefault(); const id = addEditForm['edit-id'].value ? parseInt(addEditForm['edit-id'].value) : null; const data = { nome: addEditForm['edit-nome'].value, categoria: addEditForm['edit-categoria'].value, marca: addEditForm['edit-marca'].value, unidade: addEditForm['edit-unidade'].value, preco: parseFloat(addEditForm['edit-preco'].value), estoque: parseInt(addEditForm['edit-estoque'].value), estoqueMinimo: parseInt(addEditForm['edit-estoqueMinimo'].value)}; try { await (id ? api.patchProduto(id, data) : api.postProduto(data)); addEditModal.classList.add('hidden'); await loadData(); } catch (error) { console.error("Erro ao salvar:", error); } });
+        restockForm.addEventListener('submit', async (e) => { e.preventDefault(); const id = parseInt(restockForm.elements['restock-id'].value); const quantity = parseInt(restockForm.elements['restock-quantity'].value); const product = allProdutos.find(p => p.Id === id); if(product && quantity > 0){ try { await api.patchProduto(id, { estoque: product.estoque + quantity }); restockModal.classList.add('hidden'); restockForm.reset(); await loadData(); } catch (error) { console.error("Erro ao repor estoque:", error); } } });
+        confirmDelete.addEventListener('click', async (e) => { try { await api.deleteProduto(parseInt(e.currentTarget.dataset.id)); deleteModal.classList.add('hidden'); await loadData(); } catch (error) { console.error("Erro ao apagar:", error); } });
 
-        // Submissão do Formulário de Venda
-        salesForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const productId = parseInt(salesForm.produto.value);
-            const quantidade = parseInt(salesForm.quantidade.value);
-            
-            const produto = allProdutos.find(p => p.Id === productId);
-            if (!produto) {
-                alert("Produto inválido!");
-                return;
-            }
-            if (quantidade > produto.estoque) {
-                alert(`Estoque insuficiente! Apenas ${produto.estoque} unidades disponíveis.`);
-                return;
-            }
-
-            const vendaData = {
-                produtoId: produto.Id,
-                produtoNome: produto.nome,
-                quantidade: quantidade,
-                total: quantidade * produto.preco,
-                data: new Date().toISOString()
-            };
-            const estoqueAtualizado = { estoque: produto.estoque - quantidade };
-
-            try {
-                await Promise.all([
-                    api.postVenda(vendaData),
-                    api.patchProduto(produto.Id, estoqueAtualizado)
-                ]);
-                
-                saleFeedback.textContent = `Venda de ${quantidade}x ${produto.nome} registrada com sucesso!`;
-                saleFeedback.style.color = 'green';
-                setTimeout(() => saleFeedback.textContent = '', 3000);
-                
-                salesForm.reset();
-                await loadData();
-            } catch (error) {
-                 console.error("Erro ao registrar venda:", error);
-                 alert("Falha ao registrar venda.");
-            }
-        });
-
-        // Filtros
-        [filterCategoria, filterStatusEstoque, filterVendasDate].forEach(el => el.addEventListener('change', applyFiltersAndRender));
-
-        // Botões de Modal e Refresh
-        cancelEdit.addEventListener('click', () => editModal.classList.add('hidden'));
-        cancelDelete.addEventListener('click', () => deleteModal.classList.add('hidden'));
-        refreshButton.addEventListener('click', loadData);
-
-        // --- Gerenciamento de Tema ---
-        const applyTheme = (theme) => {
-            if (theme === 'dark') {
-                document.documentElement.classList.add('dark-theme');
-                document.documentElement.classList.remove('light-theme');
-                moonIcon.classList.remove('hidden');
-                sunIcon.classList.add('hidden');
-            } else {
-                document.documentElement.classList.remove('dark-theme');
-                document.documentElement.classList.add('light-theme');
-                sunIcon.classList.remove('hidden');
-                moonIcon.classList.add('hidden');
-            }
-            localStorage.setItem('theme', theme);
+        const updateCart = () => {
+            cartItemsList.innerHTML = currentCart.map((item, index) => `<li class="flex justify-between items-center text-sm"><div>${item.quantidade}x ${item.produtoNome}</div><div class="flex items-center gap-2"><span>${formatCurrency(item.quantidade * item.precoUnitario)}</span><button data-index="${index}" class="remove-cart-item-btn text-red-400">&times;</button></div></li>`).join('');
+            const total = currentCart.reduce((sum, item) => sum + item.quantidade * item.precoUnitario, 0);
+            cartTotalEl.textContent = formatCurrency(total);
+            finalizeSaleBtn.disabled = currentCart.length === 0;
         };
+        addToCartBtn.addEventListener('click', () => {
+            if(!selectedProductForSale || !saleQuantityInput.value > 0) return;
+            const quantity = parseInt(saleQuantityInput.value);
+            const existingItem = currentCart.find(item => item.produtoId === selectedProductForSale.Id);
+            if(existingItem) { existingItem.quantidade += quantity; }
+            else { currentCart.push({ produtoId: selectedProductForSale.Id, produtoNome: selectedProductForSale.nome, quantidade: quantity, precoUnitario: selectedProductForSale.preco }); }
+            updateCart();
+            selectedProductForSale = null;
+            saleProductSearchInput.value = '';
+            saleQuantityInput.value = 1;
+        });
+        cartItemsList.addEventListener('click', (e) => { if(e.target.classList.contains('remove-cart-item-btn')) { currentCart.splice(e.target.dataset.index, 1); updateCart(); } });
+        
+        let selectedPaymentMethod = '';
+        paymentMethodGroup.addEventListener('click', (e) => { if(e.target.tagName === 'BUTTON') { paymentMethodGroup.querySelectorAll('button').forEach(b => b.classList.remove('selected')); e.target.classList.add('selected'); selectedPaymentMethod = e.target.dataset.value; } });
+        
+        finalizeSaleBtn.addEventListener('click', () => {
+             if(currentCart.length === 0 || !selectedPaymentMethod) { alert("Carrinho vazio ou forma de pagamento não selecionada."); return; }
+             confirmSaleModal.classList.remove('hidden');
+        });
+        
+        cancelSale.addEventListener('click', () => confirmSaleModal.classList.add('hidden'));
 
-        themeToggleBtn.addEventListener('click', () => {
-            const currentTheme = localStorage.getItem('theme') || 'light';
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            applyTheme(newTheme);
+        confirmSale.addEventListener('click', async () => {
+            confirmSaleModal.classList.add('hidden');
+            const sale = { items: currentCart, total: currentCart.reduce((s, i) => s + i.quantidade * i.precoUnitario, 0), formaPagamento: selectedPaymentMethod, data: new Date().toISOString() };
+            try {
+                await api.postVenda(sale);
+                for(const item of currentCart) { const product = allProdutos.find(p => p.Id === item.produtoId); await api.patchProduto(item.produtoId, { estoque: product.estoque - item.quantidade }); }
+                currentCart = []; updateCart(); selectedPaymentMethod = ''; paymentMethodGroup.querySelectorAll('button').forEach(b=>b.classList.remove('selected'));
+                saleFeedback.textContent = `Venda registrada!`; setTimeout(() => saleFeedback.textContent = '', 3000);
+                await loadData();
+            } catch(e) { console.error("Erro ao finalizar venda", e); }
+        });
+        
+        const renderSaleProductResults = (filter) => {
+            const filtered = allProdutos.filter(p => p.estoque > 0 && p.nome.toLowerCase().includes(filter.toLowerCase()));
+            saleProductResults.innerHTML = filtered.map(p => `<div data-id="${p.Id}" class="p-2 hover:bg-gray-700 cursor-pointer search-results-option">${p.nome}</div>`).join('');
+        };
+        saleProductSearchInput.addEventListener('focus', () => { renderSaleProductResults(saleProductSearchInput.value); saleProductResults.classList.remove('hidden'); });
+        saleProductSearchInput.addEventListener('input', () => renderSaleProductResults(saleProductSearchInput.value));
+        saleProductResults.addEventListener('click', (e) => { if(e.target.dataset.id) { selectedProductForSale = allProdutos.find(p=> p.Id === parseInt(e.target.dataset.id)); saleProductSearchInput.value = selectedProductForSale.nome; saleProductResults.classList.add('hidden'); } });
+        document.addEventListener('click', (e) => { if (!saleProductSearchInput.contains(e.target) && !saleProductResults.contains(e.target)) saleProductResults.classList.add('hidden'); });
+        
+        filterStartDate.addEventListener('input', () => { filterEndDate.min = filterStartDate.value; });
+        filterEndDate.addEventListener('input', () => { filterStartDate.max = filterEndDate.value; });
+        filterTodayBtn.addEventListener('click', () => { const today = new Date().toISOString().split('T')[0]; filterStartDate.value = today; filterEndDate.value = today; applyFiltersAndRender(); });
+        resetFilterBtn.addEventListener('click', () => { filterStartDate.value = ''; filterEndDate.value = ''; filterStartDate.max = ''; filterEndDate.min = ''; applyFiltersAndRender(); });
+        
+        let shoppingListItems = [];
+        const renderEditableShoppingList = () => {
+            editableShoppingList.innerHTML = shoppingListItems.map((item, index) => `
+                <li class="flex items-center gap-2 p-2 rounded-md" style="background-color: var(--btn-bg);">
+                    <span class="flex-grow">${item.name}</span>
+                    <input type="number" value="${item.qty}" min="1" data-index="${index}" class="custom-input w-24 shopping-item-qty">
+                    <button data-index="${index}" class="remove-shopping-item-btn text-red-400 p-2">&times;</button>
+                </li>
+            `).join('');
+        };
+        prepareShoppingListBtn.addEventListener('click', () => {
+            shoppingListItems = allProdutos.filter(p => p.estoque <= p.estoqueMinimo).map(p => ({name: p.nome, qty: 1}));
+            renderEditableShoppingList();
+            shoppingListModal.classList.remove('hidden');
+        });
+        addShoppingItemForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nameInput = document.getElementById('shopping-item-name');
+            const qtyInput = document.getElementById('shopping-item-qty');
+            if(nameInput.value) {
+                shoppingListItems.push({name: nameInput.value, qty: parseInt(qtyInput.value)});
+                renderEditableShoppingList();
+                addShoppingItemForm.reset();
+                qtyInput.value = 1;
+            }
+        });
+        editableShoppingList.addEventListener('change', (e) => {
+            if(e.target.classList.contains('shopping-item-qty')) {
+                const index = e.target.dataset.index;
+                shoppingListItems[index].qty = parseInt(e.target.value);
+            }
+        });
+        editableShoppingList.addEventListener('click', (e) => {
+            if(e.target.classList.contains('remove-shopping-item-btn')) {
+                shoppingListItems.splice(e.target.dataset.index, 1);
+                renderEditableShoppingList();
+            }
         });
 
-        // --- Carga Inicial ---
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        applyTheme(savedTheme);
+        exportShoppingListPdfBtn.addEventListener('click', () => {
+            const doc = new jsPDF();
+            doc.setFontSize(18); doc.text("Lista de Compras - Lumi Doces", 14, 22);
+            doc.setFontSize(11);
+            let y = 30;
+            shoppingListItems.forEach(item => { doc.text(`- ${item.name} (Quantidade: ${item.qty})`, 14, y); y += 7; });
+            doc.save(`lista-de-compras-${new Date().toISOString().split('T')[0]}.pdf`);
+        });
+
+        document.getElementById('salesFilterButtons').addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if(!btn) return;
+            document.querySelectorAll('#salesFilterButtons button').forEach(b => b.classList.remove('filter-btn-active'));
+            btn.classList.add('filter-btn-active');
+            
+            const period = btn.dataset.period;
+            const endDate = new Date();
+            let startDate = new Date();
+            if(period === 'week') startDate.setDate(endDate.getDate() - 7);
+            if(period === 'month') startDate.setMonth(endDate.getMonth() - 1);
+            if(period === 'year') startDate.setFullYear(endDate.getFullYear() - 1);
+            dashboardFilterStartDate.value = startDate.toISOString().split('T')[0];
+            dashboardFilterEndDate.value = endDate.toISOString().split('T')[0];
+            applyFiltersAndRender();
+        });
+
+        vendasList.addEventListener('click', (e) => {
+            const btn = e.target.closest('.edit-sale-btn');
+            if(btn) {
+                saleToEditId = parseInt(btn.dataset.id);
+                passwordModal.classList.remove('hidden');
+                document.getElementById('passwordInput').focus();
+            }
+        });
+
+        passwordForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = document.getElementById('passwordInput').value;
+            const errorEl = document.getElementById('passwordError');
+            if(password === 'lumi10') {
+                errorEl.textContent = '';
+                passwordModal.classList.add('hidden');
+                
+                // NOTE: For simplicity, editing a sale will revert stock and delete the sale,
+                // adding the items back to the cart for a new sale to be made.
+                // A full edit-in-place would be significantly more complex.
+                const saleToEdit = allVendas.find(v => v.Id === saleToEditId);
+                if (saleToEdit) {
+                    // Revert stock
+                    saleToEdit.items.forEach(async item => {
+                        const product = allProdutos.find(p => p.Id === item.produtoId);
+                        await api.patchProduto(item.produtoId, { estoque: product.estoque + item.quantidade });
+                    });
+                    
+                    // Remove old sale
+                    mockVendas = mockVendas.filter(v => v.Id !== saleToEditId);
+
+                    // Add items to current cart
+                    currentCart = [...saleToEdit.items];
+                    
+                    // Switch to sales page and update UI
+                    switchPage('Vendas');
+                    updateCart();
+                    loadData();
+                }
+                saleToEditId = null;
+
+            } else {
+                errorEl.textContent = 'Senha incorreta.';
+            }
+        });
+        cancelPassword.addEventListener('click', () => passwordModal.classList.add('hidden'));
+
+        [pageDashboardBtn, pageEstoqueBtn, pageVendasBtn].forEach(btn => btn.addEventListener('click', () => switchPage(btn.id.replace('page', '').replace('Btn', ''))));
+        [filterCategoria, filterStatusEstoque, searchProdutoInput, filterStartDate, filterEndDate, dashboardFilterStartDate, dashboardFilterEndDate].forEach(el => el.addEventListener('input', applyFiltersAndRender));
+        cancelEdit.addEventListener('click', () => addEditModal.classList.add('hidden')); cancelDelete.addEventListener('click', () => deleteModal.classList.add('hidden')); cancelRestock.addEventListener('click', () => { restockModal.classList.add('hidden'); restockForm.reset(); });
+        closeShoppingListModal.addEventListener('click', () => shoppingListModal.classList.add('hidden'));
+        
+        const applyTheme = (theme) => {
+            document.documentElement.classList.toggle('light-theme', theme === 'light'); document.documentElement.classList.toggle('dark-theme', theme === 'dark');
+            sunIcon.classList.toggle('hidden', theme === 'dark'); moonIcon.classList.toggle('hidden', theme === 'light');
+            localStorage.setItem('theme', theme);
+            const isDarkMode = theme !== 'light';
+            Chart.defaults.color = isDarkMode ? '#e2e8f0' : '#475569';
+            Chart.defaults.borderColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            if(allVendas.length) applyFiltersAndRender();
+        };
+        themeToggleBtn.addEventListener('click', () => applyTheme(localStorage.getItem('theme') === 'dark' ? 'light' : 'dark'));
+
+        applyTheme(localStorage.getItem('theme') || 'dark');
         loadData();
     </script>
 </body>
 </html>
+
