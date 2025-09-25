@@ -61,16 +61,25 @@
         </header>
 
         <nav class="mb-8 p-2 glass-effect rounded-lg flex items-center justify-center sm:justify-start gap-2">
-            <button id="pageVendasBtn" class="page-btn">Vendas</button>
+            <button id="pageVendasBtn" class="page-btn page-btn-active">Vendas</button>
             <button id="pageEstoqueBtn" class="page-btn">Estoque</button>
-            <button id="pageDashboardBtn" class="page-btn page-btn-active">Dashboard</button>
+            <button id="pageDashboardBtn" class="page-btn">Dashboard</button>
         </nav>
 
         <main id="app-content">
             <!-- PÁGINA DASHBOARD -->
-            <div id="dashboardPage">
+            <div id="dashboardPage" class="hidden">
                  <div class="glass-effect p-4 rounded-lg mb-8 flex flex-col sm:flex-row items-center gap-4 justify-between flex-wrap">
-                    <div class="flex items-center gap-2 flex-wrap"><label for="dashboardFilterStartDate" class="text-sm">De:</label><input type="date" id="dashboardFilterStartDate" class="custom-input w-auto"><label for="dashboardFilterEndDate" class="text-sm">Até:</label><input type="date" id="dashboardFilterEndDate" class="custom-input w-auto"></div>
+                    <div class="w-full sm:w-auto grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="dashboardFilterStartDate" class="block text-xs font-semibold text-gray-400 uppercase">De:</label>
+                            <input type="date" id="dashboardFilterStartDate" class="custom-input w-full mt-1">
+                        </div>
+                        <div>
+                            <label for="dashboardFilterEndDate" class="block text-xs font-semibold text-gray-400 uppercase">Até:</label>
+                            <input type="date" id="dashboardFilterEndDate" class="custom-input w-full mt-1">
+                        </div>
+                    </div>
                     <div id="salesFilterButtons" class="flex items-center gap-2 rounded-md p-1" style="background-color: var(--btn-bg);"><button data-period="week" class="px-3 py-1 text-sm rounded-md">Semana</button><button data-period="month" class="px-3 py-1 text-sm rounded-md">Mês</button><button data-period="year" class="px-3 py-1 text-sm rounded-md">Ano</button></div>
                  </div>
                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -105,7 +114,7 @@
                             <select id="filterCategoria" class="custom-select sm:w-auto flex-grow-0"><option value="todos">Todas Categorias</option></select>
                             <select id="filterStatusEstoque" class="custom-select sm:w-auto flex-grow-0"><option value="todos">Todos Status</option><option value="ok">Em Estoque</option><option value="low">Estoque Baixo</option><option value="out">Esgotado</option></select>
                         </div>
-                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <div class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
                              <button id="prepareShoppingListBtn" class="w-full sm:w-auto flex-shrink-0 bg-yellow-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-yellow-700 transition">Preparar Lista</button>
                             <button id="addProdutoBtn" class="w-full sm:w-auto flex-shrink-0 bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition">Adicionar Produto</button>
                         </div>
@@ -115,10 +124,10 @@
             </div>
 
             <!-- PÁGINA VENDAS -->
-            <div id="vendasPage" class="hidden">
+            <div id="vendasPage">
                  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-1"><div class="glass-effect rounded-lg p-6 h-full flex flex-col"><h2 class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);">Registrar Venda</h2><div class="flex-grow space-y-4"><div class="flex items-end gap-2"><div class="relative flex-grow"><label class="block text-sm font-medium mb-1">Produto</label><input type="text" id="sale-product-search" placeholder="Pesquisar..." class="custom-input"><div id="sale-product-results" class="absolute z-10 w-full rounded-md mt-1 hidden max-h-40 overflow-y-auto border" style="border-color: var(--input-border);"><div class="search-results-option"></div></div></div><div class="flex-shrink-0"><label class="block text-sm font-medium mb-1">Qtd.</label><input type="number" id="sale-quantity" value="1" min="1" class="custom-input w-20 text-center"></div><button id="addToCartBtn" class="bg-blue-600 p-2 rounded-md text-white hover:bg-blue-700 h-10 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/></svg></button></div><div id="cart" class="border-t border-b py-2 space-y-2 flex-grow overflow-y-auto max-h-72" style="border-color: var(--border-color);"><ul id="cart-items" class="space-y-2"></ul></div></div><div class="mt-auto pt-4"><div class="flex justify-between font-bold text-lg mb-4"><span>TOTAL:</span><span id="cart-total">R$ 0,00</span></div><div id="paymentMethodGroup" class="payment-btn-group grid grid-cols-2 gap-2 mb-4"><button type="button" data-value="Crédito">Crédito</button><button type="button" data-value="Débito">Débito</button><button type="button" data-value="Dinheiro">Dinheiro</button><button type="button" data-value="Pix">Pix</button></div><button id="finalizeSaleBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-sm text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-500">Finalizar Venda</button><div id="sale-feedback" class="mt-4 text-center"></div></div></div></div>
-                    <div class="lg:col-span-2"><div class="glass-effect p-4 sm:p-6 rounded-lg"><div class="flex flex-col sm:flex-row justify-between items-center mb-5 gap-2 flex-wrap"><h2 class="text-xl font-semibold font-orbitron">Histórico de Vendas</h2><div class="flex items-center gap-2 flex-wrap"><label for="filterStartDate" class="text-sm">De:</label><input type="date" id="filterStartDate" class="custom-input w-auto"><label for="filterEndDate" class="text-sm">Até:</label><input type="date" id="filterEndDate" class="custom-input w-auto"><button id="filterTodayBtn" class="px-3 py-1.5 text-sm rounded-md" style="background-color: var(--btn-bg);">Hoje</button><button id="resetFilterBtn" class="px-3 py-1.5 text-sm rounded-md" style="background-color: var(--btn-bg);">Limpar</button></div></div><div class="overflow-x-auto"><table class="min-w-full"><thead class="border-b" style="border-color: var(--border-color);"><tr><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Data</th><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Itens</th><th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider">Pagamento</th><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Total</th><th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider">Ações</th></tr></thead><tbody id="vendasList"></tbody></table></div></div></div>
+                    <div class="lg:col-span-1"><div class="glass-effect rounded-lg p-6 h-full flex flex-col"><h2 class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);">Registrar Venda</h2><div class="flex-grow space-y-4"><div class="flex items-end gap-2"><div class="relative flex-grow"><label class="block text-sm font-medium mb-1">Produto</label><input type="text" id="sale-product-search" placeholder="Pesquisar..." class="custom-input"><div id="sale-product-results" class="absolute z-10 w-full rounded-md mt-1 hidden max-h-40 overflow-y-auto border" style="border-color: var(--input-border);"><div class="search-results-option"></div></div></div><div class="flex-shrink-0"><label class="block text-sm font-medium mb-1">Qtd.</label><input type="number" id="sale-quantity" value="1" min="1" class="custom-input w-20 text-center"></div><button id="addToCartBtn" class="bg-blue-600 p-2 rounded-md text-white hover:bg-blue-700 h-10 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/></svg></button></div><div id="cart" class="border-t border-b py-2 space-y-2 flex-grow overflow-y-auto max-h-72" style="border-color: var(--border-color);"><ul id="cart-items" class="space-y-2"></ul></div></div><div class="mt-auto pt-4"><div class="flex justify-between font-bold text-lg mb-4"><span>TOTAL:</span><span id="cart-total">R$ 0,00</span></div><button id="finalizeSaleBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-sm text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-500">Finalizar Venda</button><div id="sale-feedback" class="mt-4 text-center"></div></div></div></div>
+                    <div class="lg:col-span-2"><div class="glass-effect p-4 sm:p-6 rounded-lg"><div class="flex flex-col sm:flex-row justify-between items-center mb-5 gap-4 flex-wrap"><h2 class="text-xl font-semibold font-orbitron w-full text-center sm:w-auto sm:text-left">Histórico de Vendas</h2><div class="w-full sm:w-auto flex flex-col gap-2"><div class="grid grid-cols-1 sm:grid-cols-2 gap-2"><div><label for="filterStartDate" class="block text-xs font-semibold text-gray-400 uppercase">De:</label><input type="date" id="filterStartDate" class="custom-input w-full mt-1"></div><div><label for="filterEndDate" class="block text-xs font-semibold text-gray-400 uppercase">Até:</label><input type="date" id="filterEndDate" class="custom-input w-full mt-1"></div></div><div class="grid grid-cols-2 gap-2"><button id="filterTodayBtn" class="px-3 py-2 text-sm rounded-md" style="background-color: var(--btn-bg);">Hoje</button><button id="resetFilterBtn" class="px-3 py-2 text-sm rounded-md" style="background-color: var(--btn-bg);">Limpar</button></div></div></div><div class="overflow-x-auto"><table class="min-w-full"><thead class="border-b" style="border-color: var(--border-color);"><tr><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Data</th><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Itens</th><th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider">Pagamento</th><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Total</th><th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider">Ações</th></tr></thead><tbody id="vendasList"></tbody></table></div></div></div>
                 </div>
             </div>
         </main>
@@ -128,15 +137,15 @@
     <div id="addEditModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md"><h2 id="modalTitle" class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);"></h2><form id="addEditForm" class="space-y-4"><input type="hidden" id="edit-id"><div><label class="modal-label block text-sm font-medium">Nome do Produto</label><input type="text" id="edit-nome" required class="custom-input mt-1"></div><div class="grid grid-cols-2 gap-4"><div><label class="modal-label block text-sm font-medium">Marca</label><div class="relative"><input type="text" id="edit-marca" required class="custom-input mt-1"><div id="edit-marca-options" class="absolute z-10 w-full bg-gray-800 border border-gray-600 rounded-md mt-1 hidden max-h-40 overflow-y-auto"></div></div></div><div><label class="modal-label block text-sm font-medium">Categoria</label><div class="relative"><input type="text" id="edit-categoria" required class="custom-input mt-1"><div id="edit-categoria-options" class="absolute z-10 w-full bg-gray-800 border border-gray-600 rounded-md mt-1 hidden max-h-40 overflow-y-auto"></div></div></div></div><div class="grid grid-cols-2 gap-4"><div><label class="modal-label block text-sm font-medium">Preço</label><input type="number" id="edit-preco" required step="0.01" min="0" class="custom-input mt-1"></div><div><label class="modal-label block text-sm font-medium">Estoque Mínimo</label><input type="number" id="edit-estoqueMinimo" required step="1" min="0" class="custom-input mt-1"></div></div><div class="grid grid-cols-2 gap-4"><div><label class="modal-label block text-sm font-medium">Estoque Atual</label><input type="number" id="edit-estoque" required step="1" min="0" class="custom-input mt-1"></div><div><label class="modal-label block text-sm font-medium">Unidade</label><select id="edit-unidade" class="custom-select mt-1"><option>Unidade</option><option>Caixa</option><option>Pacote</option><option>Kg</option></select></div></div><div class="flex gap-4 pt-4"><button type="button" id="cancelEdit" class="w-full justify-center py-2 px-4 border rounded-md shadow-sm text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md shadow-sm text-sm text-white bg-blue-600 hover:bg-blue-700">Salvar</button></div></form></div></div>
     <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md text-center"><h2 class="text-2xl font-semibold mb-5 text-yellow-400 font-orbitron">Confirmar Exclusão</h2><p class="mb-6">Tem certeza de que deseja apagar este produto?</p><div class="flex gap-4 pt-4"><button type="button" id="cancelDelete" class="w-full justify-center py-2 px-4 border rounded-md shadow-sm text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="button" id="confirmDelete" class="w-full justify-center py-2 px-4 border-transparent rounded-md shadow-sm text-sm text-white bg-red-600 hover:bg-red-700">Apagar</button></div></div></div>
     <div id="restockModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-sm"><h2 class="text-2xl font-semibold mb-2 font-orbitron" style="color: var(--text-title);">Repor Estoque</h2><p id="restockProductName" class="mb-4 text-gray-400"></p><form id="restockForm"><input type="hidden" id="restock-id"><label class="modal-label block text-sm font-medium">Quantidade a adicionar</label><input type="number" id="restock-quantity" min="1" required class="custom-input mt-1"><div class="flex gap-4 pt-4"><button type="button" id="cancelRestock" class="w-full justify-center py-2 px-4 border rounded-md text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-sm text-white bg-blue-600 hover:bg-blue-700">Confirmar</button></div></form></div></div>
-    <div id="shoppingListModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-2xl flex flex-col h-full max-h-[90vh]"><h2 class="text-2xl font-semibold mb-4 font-orbitron text-center" style="color: var(--text-title);">Preparar Lista de Compras</h2><div class="flex-grow overflow-y-auto pr-2"><ul id="editableShoppingList" class="space-y-2"></ul></div><div class="pt-4 border-t" style="border-color: var(--border-color);"><h3 class="font-semibold mb-2">Adicionar Item</h3><form id="addShoppingItemForm" class="grid grid-cols-1 md:grid-cols-2 gap-2 items-end"><div class="relative"><label class="modal-label text-xs">Buscar Item Cadastrado</label><input type="text" id="shopping-item-search" placeholder="Pesquisar..." class="custom-input w-full"><div id="shopping-item-results" class="absolute z-20 w-full rounded-md mt-1 hidden max-h-40 overflow-y-auto border" style="border-color: var(--input-border);"></div></div><div class="flex items-end gap-2"><div class="flex-grow"><label class="modal-label text-xs">Qtd.</label><input type="number" id="shopping-item-qty" value="1" min="1" class="custom-input"></div><button type="submit" class="bg-blue-600 p-2 rounded-md text-white hover:bg-blue-700 h-10">Adicionar</button></div></form></div><div class="flex gap-4 pt-6 mt-auto"><button type="button" id="closeShoppingListModal" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Fechar</button><button type="button" id="exportShoppingListPdfBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-green-600 hover:bg-green-700">Salvar e Exportar PDF</button></div></div></div>
-    <div id="confirmSaleModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md text-center"><h2 class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);">Confirmar Venda</h2><p class="mb-6">Deseja realmente finalizar esta venda?</p><div class="flex gap-4 pt-4"><button type="button" id="cancelSale" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="button" id="confirmSale" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-green-600 hover:bg-green-700">Confirmar</button></div></div></div>
+    <div id="shoppingListModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-2xl flex flex-col h-full max-h-[90vh]"><h2 class="text-2xl font-semibold mb-4 font-orbitron text-center" style="color: var(--text-title);">Preparar Lista de Compras</h2><div class="flex-grow overflow-y-auto pr-2"><ul id="editableShoppingList" class="space-y-2"></ul></div><div class="pt-4 border-t" style="border-color: var(--border-color);"><h3 class="font-semibold mb-2">Adicionar Item</h3><form id="addShoppingItemForm" class="grid grid-cols-1 md:grid-cols-2 gap-2 items-end"><div class="relative"><label class="modal-label text-xs">Buscar Item Cadastrado</label><input type="text" id="shopping-item-search" placeholder="Pesquisar ou digitar novo item..." class="custom-input w-full"><div id="shopping-item-results" class="absolute z-20 w-full rounded-md mt-1 hidden max-h-40 overflow-y-auto border" style="border-color: var(--input-border);"></div></div><div class="flex items-end gap-2"><div class="flex-grow"><label class="modal-label text-xs">Qtd.</label><input type="number" id="shopping-item-qty" value="1" min="1" class="custom-input"></div><button type="submit" class="bg-blue-600 p-2 rounded-md text-white hover:bg-blue-700 h-10">Adicionar</button></div></form></div><div class="flex gap-4 pt-6 mt-auto"><button type="button" id="closeShoppingListModal" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Fechar</button><button type="button" id="exportShoppingListPdfBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-green-600 hover:bg-green-700">Salvar e Exportar PDF</button></div></div></div>
+    <div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-lg"><h2 class="text-2xl font-semibold mb-2 font-orbitron" style="color: var(--text-title);">Pagamento</h2><div class="flex justify-between items-baseline mb-4"><span class="text-lg">Total: <span id="paymentTotal"></span></span><span class="text-lg font-bold text-red-400">Restante: <span id="paymentRemaining"></span></span></div><div id="payments-made-list" class="mb-4 space-y-2 text-sm"></div><form id="addPaymentForm" class="flex items-end gap-2"><div class="flex-grow"><label class="modal-label text-xs">Valor</label><input type="number" id="payment-amount" step="0.01" min="0" class="custom-input" required></div><div><label class="modal-label text-xs">Forma</label><select id="payment-method" class="custom-select"><option>Dinheiro</option><option>Crédito</option><option>Débito</option><option>Pix</option></select></div><button type="submit" class="bg-blue-600 p-2 rounded-md text-white hover:bg-blue-700 h-10">Adicionar</button></form><div class="text-lg mt-4 font-bold text-green-400">Troco: <span id="paymentChange">R$ 0,00</span></div><div class="flex gap-4 pt-6 mt-auto"><button type="button" id="cancelPayment" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="button" id="confirmPaymentBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-500" disabled>Finalizar Venda</button></div></div></div>
     <div id="passwordModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-sm"><h2 class="text-2xl font-semibold mb-4 font-orbitron" style="color: var(--text-title);">Acesso Restrito</h2><p class="text-sm mb-4">Digite a senha para editar a venda.</p><form id="passwordForm"><input type="password" id="passwordInput" class="custom-input w-full"><p id="passwordError" class="text-red-500 text-xs mt-1 h-4"></p><div class="flex gap-4 pt-4"><button type="button" id="cancelPassword" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700">Entrar</button></div></form></div></div>
     
     <script type="module">
         const { jsPDF } = window.jspdf;
         // --- DADOS DE DEMONSTRAÇÃO ---
         let mockProdutos = [ { Id: 1, nome: 'Brigadeiro Gourmet', categoria: 'Doces', marca: 'Lumi', unidade: 'Unidade', preco: 4.50, estoque: 50, estoqueMinimo: 10 }, { Id: 2, nome: 'Caixa de Bombom', categoria: 'Chocolates', marca: 'Nestlé', unidade: 'Caixa', preco: 25.00, estoque: 8, estoqueMinimo: 5 }, { Id: 3, nome: 'Bala de Goma (100g)', categoria: 'Balas', marca: 'Fini', unidade: 'Pacote', preco: 6.00, estoque: 80, estoqueMinimo: 20 }, { Id: 4, nome: 'Pirulito Colorido', categoria: 'Balas', marca: 'Lumi', unidade: 'Unidade', preco: 1.50, estoque: 120, estoqueMinimo: 50 }, { Id: 5, nome: 'Barra de Chocolate Amargo', categoria: 'Chocolates', marca: 'Cacau Show', unidade: 'Unidade', preco: 12.00, estoque: 0, estoqueMinimo: 10 }, { Id: 6, nome: 'Paçoca', categoria: 'Doces', marca: 'Santa Helena', unidade: 'Unidade', preco: 2.00, estoque: 45, estoqueMinimo: 15 }, ];
-        let mockVendas = [ { Id: 101, items: [{produtoId: 3, produtoNome: "Bala de Goma (100g)", quantidade: 2, precoUnitario: 6.00}], total: 12.00, formaPagamento: 'Débito', data: '2025-07-23T10:00:00Z' }, { Id: 102, items: [{produtoId: 1, produtoNome: "Brigadeiro Gourmet", quantidade: 5, precoUnitario: 4.50}], total: 22.50, formaPagamento: 'Pix', data: '2025-08-15T14:30:00Z' }, { Id: 103, items: [{produtoId: 2, produtoNome: "Caixa de Bombom", quantidade: 1, precoUnitario: 25.00}, {produtoId: 4, produtoNome: "Pirulito Colorido", quantidade: 10, precoUnitario: 1.50}], total: 40.00, formaPagamento: 'Crédito', data: '2025-09-24T18:00:00Z' }, ];
+        let mockVendas = [ { Id: 101, items: [{produtoId: 3, produtoNome: "Bala de Goma (100g)", quantidade: 2, precoUnitario: 6.00}], total: 12.00, pagamentos: [{method: 'Débito', amount: 12.00}], data: '2025-07-23T10:00:00Z', edited: false }, { Id: 102, items: [{produtoId: 1, produtoNome: "Brigadeiro Gourmet", quantidade: 5, precoUnitario: 4.50}], total: 22.50, pagamentos: [{method: 'Pix', amount: 22.50}], data: '2025-08-15T14:30:00Z', edited: false }, { Id: 103, items: [{produtoId: 2, produtoNome: "Caixa de Bombom", quantidade: 1, precoUnitario: 25.00}, {produtoId: 4, produtoNome: "Pirulito Colorido", quantidade: 10, precoUnitario: 1.50}], total: 40.00, pagamentos: [{method: 'Crédito', amount: 40.00}], data: '2025-09-24T18:00:00Z', edited: false }, ];
         let nextProductId = 7, nextVendaId = 104;
         
         // --- API SIMULADA ---
@@ -147,6 +156,8 @@
         let charts = {};
         let selectedProductForSale = null;
         let saleToEditId = null;
+        let isEditingSale = false;
+        let currentPayments = [];
 
         // --- SELETORES DE UI ---
         const pageDashboardBtn = document.getElementById('pageDashboardBtn'), pageEstoqueBtn = document.getElementById('pageEstoqueBtn'), pageVendasBtn = document.getElementById('pageVendasBtn');
@@ -158,12 +169,12 @@
         const restockModal = document.getElementById('restockModal'), restockForm = document.getElementById('restockForm'), cancelRestock = document.getElementById('cancelRestock');
         const shoppingListModal = document.getElementById('shoppingListModal'), editableShoppingList = document.getElementById('editableShoppingList'), addShoppingItemForm = document.getElementById('addShoppingItemForm'), closeShoppingListModal = document.getElementById('closeShoppingListModal'), exportShoppingListPdfBtn = document.getElementById('exportShoppingListPdfBtn'), prepareShoppingListBtn = document.getElementById('prepareShoppingListBtn');
         const shoppingItemSearch = document.getElementById('shopping-item-search'), shoppingItemResults = document.getElementById('shopping-item-results');
-        const confirmSaleModal = document.getElementById('confirmSaleModal'), cancelSale = document.getElementById('cancelSale'), confirmSale = document.getElementById('confirmSale');
+        const paymentModal = document.getElementById('paymentModal'), addPaymentForm = document.getElementById('addPaymentForm'), cancelPayment = document.getElementById('cancelPayment'), confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
         const passwordModal = document.getElementById('passwordModal'), passwordForm = document.getElementById('passwordForm'), cancelPassword = document.getElementById('cancelPassword');
         const estoqueList = document.getElementById('estoqueList'), vendasList = document.getElementById('vendasList');
         const saleProductSearchInput = document.getElementById('sale-product-search'), saleProductResults = document.getElementById('sale-product-results');
         const saleQuantityInput = document.getElementById('sale-quantity'), addToCartBtn = document.getElementById('addToCartBtn'), cartItemsList = document.getElementById('cart-items'), cartTotalEl = document.getElementById('cart-total'), finalizeSaleBtn = document.getElementById('finalizeSaleBtn');
-        const saleFeedback = document.getElementById('sale-feedback'), paymentMethodGroup = document.getElementById('paymentMethodGroup');
+        const saleFeedback = document.getElementById('sale-feedback');
         const filterCategoria = document.getElementById('filterCategoria'), filterStatusEstoque = document.getElementById('filterStatusEstoque'), searchProdutoInput = document.getElementById('searchProdutoInput');
         const filterStartDate = document.getElementById('filterStartDate'), filterEndDate = document.getElementById('filterEndDate');
         const filterTodayBtn = document.getElementById('filterTodayBtn'), resetFilterBtn = document.getElementById('resetFilterBtn');
@@ -182,7 +193,7 @@
         };
 
         const renderVendasView = (vendas) => {
-            vendasList.innerHTML = vendas.length ? vendas.sort((a, b) => new Date(b.data) - new Date(a.data)).map(v => `<tr class="border-b" style="border-color: var(--border-color);"><td class="px-4 py-3 text-sm">${new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(v.data))}</td><td class="px-4 py-3 text-sm text-gray-400">${v.items.map(i => `${i.quantidade}x ${i.produtoNome}`).join(', ')}</td><td class="px-4 py-3 text-sm text-center text-gray-400">${v.formaPagamento}</td><td class="px-4 py-3 text-sm text-gray-400">${formatCurrency(v.total)}</td><td class="px-4 py-3 text-center"><button class="action-btn edit-sale-btn" data-id="${v.Id}" title="Editar Venda"><svg class="pointer-events-none text-blue-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V12h2.293z"/></svg></button></td></tr>`).join('') : `<tr><td colspan="5" class="p-4 text-center">Nenhuma venda encontrada.</td></tr>`;
+            vendasList.innerHTML = vendas.length ? vendas.sort((a, b) => new Date(b.data) - new Date(a.data)).map(v => `<tr class="border-b" style="border-color: var(--border-color);"><td class="px-4 py-3 text-sm">${new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(v.data))} ${v.edited ? '<span class="text-xs text-yellow-400">(Editada)</span>' : ''}</td><td class="px-4 py-3 text-sm text-gray-400">${v.items.map(i => `${i.quantidade}x ${i.produtoNome}`).join(', ')}</td><td class="px-4 py-3 text-sm text-center text-gray-400">${v.pagamentos.map(p=>p.method).join(', ')}</td><td class="px-4 py-3 text-sm text-gray-400">${formatCurrency(v.total)}</td><td class="px-4 py-3 text-center"><button class="action-btn edit-sale-btn" data-id="${v.Id}" title="Editar Venda"><svg class="pointer-events-none text-blue-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V12h2.293z"/></svg></button></td></tr>`).join('') : `<tr><td colspan="5" class="p-4 text-center">Nenhuma venda encontrada.</td></tr>`;
         };
         
         const renderDashboard = (vendasData, produtosData) => {
@@ -195,7 +206,7 @@
             const categoryCounts = produtosData.reduce((acc, p) => { acc[p.categoria] = (acc[p.categoria] || 0) + 1; return acc; }, {});
             document.getElementById('categoryProductCount').innerHTML = Object.entries(categoryCounts).map(([cat, count]) => `<div class="glass-effect p-3 rounded-lg text-center"><p class="text-xs font-semibold text-gray-400 uppercase">${cat}</p><p class="text-xl font-bold">${count}</p></div>`).join('');
             
-            const paymentData = vendasData.reduce((acc, v) => { acc[v.formaPagamento] = (acc[v.formaPagamento] || 0) + v.total; return acc; }, {});
+            const paymentData = vendasData.reduce((acc, v) => { v.pagamentos.forEach(p => { acc[p.method] = (acc[p.method] || 0) + p.amount; }); return acc; }, {});
             document.getElementById('paymentMethodCards').innerHTML = ['Crédito', 'Débito', 'Pix', 'Dinheiro'].map(method => `<div class="glass-effect p-4 rounded-lg text-center"><h4 class="text-sm font-semibold text-gray-400 uppercase">${method}</h4><p class="text-xl font-bold">${formatCurrency(paymentData[method] || 0)}</p></div>`).join('');
             
             const renderChart = (id, type, data, options) => { if (charts[id]) charts[id].destroy(); charts[id] = new Chart(document.getElementById(id).getContext('2d'), { type, data, options }); };
@@ -304,23 +315,56 @@
         });
         cartItemsList.addEventListener('click', (e) => { if(e.target.classList.contains('remove-cart-item-btn')) { currentCart.splice(e.target.dataset.index, 1); updateCart(); } });
         
-        let selectedPaymentMethod = '';
-        paymentMethodGroup.addEventListener('click', (e) => { if(e.target.tagName === 'BUTTON') { paymentMethodGroup.querySelectorAll('button').forEach(b => b.classList.remove('selected')); e.target.classList.add('selected'); selectedPaymentMethod = e.target.dataset.value; } });
-        
         finalizeSaleBtn.addEventListener('click', () => {
-             if(currentCart.length === 0 || !selectedPaymentMethod) { alert("Carrinho vazio ou forma de pagamento não selecionada."); return; }
-             confirmSaleModal.classList.remove('hidden');
+             if(currentCart.length === 0) { alert("Carrinho vazio."); return; }
+             paymentModal.classList.remove('hidden');
+             updatePaymentModal();
         });
         
-        cancelSale.addEventListener('click', () => confirmSaleModal.classList.add('hidden'));
+        const updatePaymentModal = () => {
+            const total = currentCart.reduce((sum, item) => sum + item.quantidade * item.precoUnitario, 0);
+            const paid = currentPayments.reduce((sum, p) => sum + p.amount, 0);
+            const remaining = total - paid;
+            document.getElementById('paymentTotal').textContent = formatCurrency(total);
+            document.getElementById('paymentRemaining').textContent = formatCurrency(remaining > 0 ? remaining : 0);
+            document.getElementById('paymentChange').textContent = formatCurrency(remaining < 0 ? -remaining : 0);
+            
+            document.getElementById('payments-made-list').innerHTML = currentPayments.map(p => `<div>Pagamento: ${p.method} - ${formatCurrency(p.amount)}</div>`).join('');
+            confirmPaymentBtn.disabled = remaining > 0;
+        }
 
-        confirmSale.addEventListener('click', async () => {
-            confirmSaleModal.classList.add('hidden');
-            const sale = { items: currentCart, total: currentCart.reduce((s, i) => s + i.quantidade * i.precoUnitario, 0), formaPagamento: selectedPaymentMethod, data: new Date().toISOString() };
+        addPaymentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const amount = parseFloat(document.getElementById('payment-amount').value);
+            const method = document.getElementById('payment-method').value;
+            if(amount > 0) {
+                currentPayments.push({method, amount});
+                updatePaymentModal();
+                addPaymentForm.reset();
+            }
+        });
+
+        cancelPayment.addEventListener('click', () => {
+            paymentModal.classList.add('hidden');
+            currentPayments = [];
+        });
+
+        confirmPaymentBtn.addEventListener('click', async () => {
+            paymentModal.classList.add('hidden');
+            const sale = { 
+                items: currentCart, 
+                total: currentCart.reduce((s, i) => s + i.quantidade * i.precoUnitario, 0), 
+                pagamentos: currentPayments, 
+                data: new Date().toISOString(),
+                edited: isEditingSale 
+            };
             try {
                 await api.postVenda(sale);
                 for(const item of currentCart) { const product = allProdutos.find(p => p.Id === item.produtoId); await api.patchProduto(item.produtoId, { estoque: product.estoque - item.quantidade }); }
-                currentCart = []; updateCart(); selectedPaymentMethod = ''; paymentMethodGroup.querySelectorAll('button').forEach(b=>b.classList.remove('selected'));
+                currentCart = []; 
+                currentPayments = [];
+                isEditingSale = false;
+                updateCart();
                 saleFeedback.textContent = `Venda registrada!`; setTimeout(() => saleFeedback.textContent = '', 3000);
                 await loadData();
             } catch(e) { console.error("Erro ao finalizar venda", e); }
@@ -355,15 +399,36 @@
             renderEditableShoppingList();
             shoppingListModal.classList.remove('hidden');
         });
+
+        const renderShoppingListResults = (filter) => {
+            shoppingItemResults.innerHTML = allProdutos
+                .filter(p => p.nome.toLowerCase().includes(filter.toLowerCase()))
+                .map(p => `<div data-id="${p.Id}" class="p-2 hover:bg-gray-700 cursor-pointer search-results-option">${p.nome}</div>`)
+                .join('');
+        };
+
+        shoppingItemSearch.addEventListener('focus', () => { renderShoppingListResults(shoppingItemSearch.value); shoppingItemResults.classList.remove('hidden'); });
+        shoppingItemSearch.addEventListener('input', () => { selectedProductForShoppingList = null; renderShoppingListResults(shoppingItemSearch.value); });
+        shoppingItemResults.addEventListener('click', (e) => { 
+            if(e.target.dataset.id) { 
+                selectedProductForShoppingList = allProdutos.find(p => p.Id === parseInt(e.target.dataset.id));
+                shoppingItemSearch.value = selectedProductForShoppingList.nome;
+                shoppingItemResults.classList.add('hidden');
+            } 
+        });
+        document.addEventListener('click', (e) => { if (!shoppingItemSearch.contains(e.target) && !shoppingItemResults.contains(e.target)) shoppingItemResults.classList.add('hidden'); });
+
         addShoppingItemForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const nameInput = document.getElementById('shopping-item-name');
+            const name = shoppingItemSearch.value;
             const qtyInput = document.getElementById('shopping-item-qty');
-            if(nameInput.value) {
-                shoppingListItems.push({name: nameInput.value, qty: parseInt(qtyInput.value)});
+            if(name) {
+                shoppingListItems.push({name: name, qty: parseInt(qtyInput.value)});
                 renderEditableShoppingList();
                 addShoppingItemForm.reset();
+                shoppingItemSearch.value = '';
                 qtyInput.value = 1;
+                selectedProductForShoppingList = null;
             }
         });
         editableShoppingList.addEventListener('change', (e) => {
@@ -414,35 +479,29 @@
             }
         });
 
-        passwordForm.addEventListener('submit', (e) => {
+        passwordForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const password = document.getElementById('passwordInput').value;
             const errorEl = document.getElementById('passwordError');
             if(password === 'lumi10') {
                 errorEl.textContent = '';
+                passwordForm.reset();
                 passwordModal.classList.add('hidden');
                 
-                // NOTE: For simplicity, editing a sale will revert stock and delete the sale,
-                // adding the items back to the cart for a new sale to be made.
-                // A full edit-in-place would be significantly more complex.
                 const saleToEdit = allVendas.find(v => v.Id === saleToEditId);
                 if (saleToEdit) {
-                    // Revert stock
-                    saleToEdit.items.forEach(async item => {
+                    for(const item of saleToEdit.items) {
                         const product = allProdutos.find(p => p.Id === item.produtoId);
                         await api.patchProduto(item.produtoId, { estoque: product.estoque + item.quantidade });
-                    });
+                    }
                     
-                    // Remove old sale
                     mockVendas = mockVendas.filter(v => v.Id !== saleToEditId);
-
-                    // Add items to current cart
                     currentCart = [...saleToEdit.items];
+                    isEditingSale = true;
                     
-                    // Switch to sales page and update UI
                     switchPage('Vendas');
                     updateCart();
-                    loadData();
+                    await loadData();
                 }
                 saleToEditId = null;
 
@@ -450,7 +509,11 @@
                 errorEl.textContent = 'Senha incorreta.';
             }
         });
-        cancelPassword.addEventListener('click', () => passwordModal.classList.add('hidden'));
+        cancelPassword.addEventListener('click', () => {
+            passwordForm.reset();
+            document.getElementById('passwordError').textContent = '';
+            passwordModal.classList.add('hidden');
+        });
 
         [pageDashboardBtn, pageEstoqueBtn, pageVendasBtn].forEach(btn => btn.addEventListener('click', () => switchPage(btn.id.replace('page', '').replace('Btn', ''))));
         [filterCategoria, filterStatusEstoque, searchProdutoInput, filterStartDate, filterEndDate, dashboardFilterStartDate, dashboardFilterEndDate].forEach(el => el.addEventListener('input', applyFiltersAndRender));
