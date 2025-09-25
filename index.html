@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <style>
         :root {
             --bg-primary: #0d1117; --bg-secondary: #161b22; --glass-bg: rgba(22, 27, 34, 0.6);
@@ -54,15 +55,38 @@
     </style>
 </head>
 <body class="min-h-screen">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-full">
+    <div id="loginPage" class="flex items-center justify-center min-h-screen">
+        <div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-sm">
+            <div class="flex items-center justify-center gap-4 mb-8">
+                <div class="logo-symbol">
+                    <img src="https://i.imgur.com/J3cANt2.png" alt="Logo Lumi" style="width: 38px; height: 38px; object-fit: contain; position: absolute; left: 6px; top: 6px; z-index: 2; pointer-events: none;" />
+                </div>
+                <h1 class="text-3xl font-bold font-orbitron glow-text">Lumi Doces</h1>
+            </div>
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label for="username" class="modal-label block text-sm font-medium">Usuário</label>
+                    <input type="text" id="username" class="custom-input mt-1" placeholder="admin">
+                </div>
+                <div>
+                    <label for="password" class="modal-label block text-sm font-medium">Senha</label>
+                    <input type="password" id="password" class="custom-input mt-1" placeholder="••••••••">
+                </div>
+                <button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="app-wrapper" class="hidden container mx-auto px-4 sm:px-6 lg:px-8 max-w-full">
         <header class="flex items-center justify-between gap-4 mb-6 pt-4 sm:pt-6">
             <div class="flex items-center gap-4"><div class="logo-symbol"><img src="https://i.imgur.com/J3cANt2.png" alt="Logo Lumi" style="width: 38px; height: 38px; object-fit: contain; position: absolute; left: 6px; top: 6px; z-index: 2; pointer-events: none;" /></div><h1 class="text-3xl sm:text-4xl font-bold font-orbitron glow-text">Lumi Doces</h1></div>
             <button id="themeToggleBtn" class="action-btn p-2 rounded-full" title="Alternar tema"><svg id="theme-icon-sun" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg><svg id="theme-icon-moon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg></button>
         </header>
 
-        <nav class="mb-8 p-2 glass-effect rounded-lg flex items-center justify-center sm:justify-start gap-2">
+        <nav class="mb-8 p-2 glass-effect rounded-lg flex items-center justify-center sm:justify-start gap-2 flex-wrap">
             <button id="pageVendasBtn" class="page-btn page-btn-active">Vendas</button>
             <button id="pageEstoqueBtn" class="page-btn">Estoque</button>
+            <button id="pageCustosBtn" class="page-btn">Custos</button>
             <button id="pageDashboardBtn" class="page-btn">Dashboard</button>
         </nav>
 
@@ -70,38 +94,55 @@
             <!-- PÁGINA DASHBOARD -->
             <div id="dashboardPage" class="hidden">
                  <div class="glass-effect p-4 rounded-lg mb-8 flex flex-col sm:flex-row items-center gap-4 justify-between flex-wrap">
-                    <div class="w-full sm:w-auto grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label for="dashboardFilterStartDate" class="block text-xs font-semibold text-gray-400 uppercase">De:</label>
-                            <input type="date" id="dashboardFilterStartDate" class="custom-input w-full mt-1">
-                        </div>
-                        <div>
-                            <label for="dashboardFilterEndDate" class="block text-xs font-semibold text-gray-400 uppercase">Até:</label>
-                            <input type="date" id="dashboardFilterEndDate" class="custom-input w-full mt-1">
-                        </div>
-                    </div>
-                    <div id="salesFilterButtons" class="flex items-center gap-2 rounded-md p-1" style="background-color: var(--btn-bg);"><button data-period="week" class="px-3 py-1 text-sm rounded-md">Semana</button><button data-period="month" class="px-3 py-1 text-sm rounded-md">Mês</button><button data-period="year" class="px-3 py-1 text-sm rounded-md">Ano</button></div>
-                 </div>
-                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-gray-400">FATURAMENTO TOTAL</h3><p id="metricTotalRevenue" class="text-2xl font-bold"></p></div>
-                    <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-gray-400">ITENS VENDIDOS</h3><p id="metricItemsSold" class="text-2xl font-bold"></p></div>
-                    <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-gray-400">TOTAL DE VENDAS</h3><p id="metricTotalSales" class="text-2xl font-bold"></p></div>
-                    <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-gray-400">TICKET MÉDIO</h3><p id="metricAvgTicket" class="text-2xl font-bold"></p></div>
-                 </div>
-                 
-                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                     <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Produtos por Categoria</h3><div id="categoryProductCount" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
-                     <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Vendas por Pagamento</h3><div id="paymentMethodCards" class="grid grid-cols-2 gap-4 h-full content-center"></div></div>
-                 </div>
-                 
-                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                     <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Faturamento por Categoria</h3><div class="chart-container"><canvas id="categorySalesChart"></canvas></div></div>
-                     <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Vendas por Dia da Semana</h3><div class="chart-container"><canvas id="salesByWeekdayChart"></canvas></div></div>
+                     <div class="w-full sm:w-auto flex flex-col sm:flex-row gap-4 items-center">
+                         <div class="flex items-center gap-2 w-full"><label for="dashboardFilterStartDate" class="text-sm">De:</label><input type="date" id="dashboardFilterStartDate" class="custom-input w-full"></div>
+                         <div class="flex items-center gap-2 w-full"><label for="dashboardFilterEndDate" class="text-sm">Até:</label><input type="date" id="dashboardFilterEndDate" class="custom-input w-full"></div>
+                     </div>
+                     <div class="flex items-center gap-2">
+                         <div id="salesFilterButtons" class="flex items-center gap-2 rounded-md p-1" style="background-color: var(--btn-bg);"><button data-period="week" class="px-3 py-1 text-sm rounded-md">Semana</button><button data-period="month" class="px-3 py-1 text-sm rounded-md">Mês</button><button data-period="year" class="px-3 py-1 text-sm rounded-md">Ano</button></div>
+                          <button id="generateReportBtn" class="bg-blue-600 text-white px-3 py-1.5 rounded-md font-semibold hover:bg-blue-700 transition">Gerar Relatório</button>
+                     </div>
                  </div>
 
+                 <!-- SEÇÃO BALANÇO -->
+                 <h2 class="text-2xl font-semibold mb-4 font-orbitron">Balanço Financeiro</h2>
+                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                     <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-gray-400">RECEITA BRUTA</h3><p id="balancoReceita" class="text-2xl font-bold"></p></div>
+                     <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-gray-400">CUSTO TOTAL</h3><p id="balancoCustos" class="text-2xl font-bold"></p></div>
+                     <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-green-400">LUCRO BRUTO</h3><p id="balancoLucro" class="text-2xl font-bold"></p></div>
+                     <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-blue-400">MARGEM DE LUCRO</h3><p id="balancoMargem" class="text-2xl font-bold"></p></div>
+                 </div>
+                 <div class="grid grid-cols-1 gap-8 mb-8">
+                      <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Faturamento e Custos Mensais (Últimos 12 Meses)</h3><div class="chart-container"><canvas id="revenueVsCostsChart"></canvas></div></div>
+                 </div>
+                 
+                 <!-- SEÇÃO VENDAS -->
+                 <h2 class="text-2xl font-semibold mb-4 font-orbitron mt-12">Análise de Vendas</h2>
+                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                     <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-gray-400">VENDAS REALIZADAS</h3><p id="metricTotalSales" class="text-2xl font-bold"></p></div>
+                     <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-gray-400">ITENS VENDIDOS</h3><p id="metricItemsSold" class="text-2xl font-bold"></p></div>
+                     <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-gray-400">TICKET MÉDIO</h3><p id="metricAvgTicket" class="text-2xl font-bold"></p></div>
+                      <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-red-400">VENDAS CANCELADAS</h3><p id="metricCancelledSales" class="text-2xl font-bold"></p></div>
+                 </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div class="glass-effect p-6 rounded-lg">
+                        <h3 class="font-semibold mb-4 text-center">Vendas por Dia da Semana</h3>
+                        <div class="chart-container"><canvas id="salesByWeekdayChart"></canvas></div>
+                    </div>
+                    <div class="glass-effect p-6 rounded-lg">
+                        <h3 class="font-semibold mb-4 text-center">Vendas por Pagamento</h3>
+                        <div class="chart-container"><canvas id="paymentMethodChart"></canvas></div>
+                    </div>
+                </div>
                  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                     <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Top 5 Produtos (Faturamento)</h3><div class="chart-container"><canvas id="topProductsChart"></canvas></div></div>
-                     <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Faturamento Mensal (Últimos 12 Meses)</h3><div class="chart-container"><canvas id="monthlySalesChart"></canvas></div></div>
+                      <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Faturamento por Categoria</h3><div class="chart-container"><canvas id="categorySalesChart"></canvas></div></div>
+                      <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Top 5 Produtos (Faturamento)</h3><div class="chart-container"><canvas id="topProductsChart"></canvas></div></div>
+                 </div>
+                
+                 <!-- SEÇÃO CUSTOS -->
+                 <h2 class="text-2xl font-semibold mb-4 font-orbitron mt-12">Análise de Custos</h2>
+                 <div class="grid grid-cols-1 gap-8 mb-8">
+                      <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Custos por Categoria</h3><div class="chart-container"><canvas id="costsByCategoryChart"></canvas></div></div>
                  </div>
             </div>
 
@@ -123,11 +164,36 @@
                 </div>
             </div>
 
+             <!-- PÁGINA CUSTOS -->
+            <div id="custosPage" class="hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-1">
+                        <div class="glass-effect rounded-lg p-6 h-full">
+                            <h2 class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);">Registrar Custo</h2>
+                            <form id="addCostForm" class="space-y-4">
+                                <input type="hidden" id="cost-id">
+                                <div><label class="modal-label block text-sm font-medium">Descrição</label><input type="text" id="cost-description" required class="custom-input mt-1"></div>
+                                <div><label class="modal-label block text-sm font-medium">Categoria</label><select id="cost-category" class="custom-select mt-1"><option>Fixo</option><option>Variável</option><option>Matéria Prima</option><option>Outros</option></select></div>
+                                <div><label class="modal-label block text-sm font-medium">Data</label><input type="date" id="cost-date" required class="custom-input mt-1"></div>
+                                <div><label class="modal-label block text-sm font-medium">Valor</label><input type="number" id="cost-value" step="0.01" min="0" required class="custom-input mt-1"></div>
+                                <div class="pt-2"><button type="submit" id="saveCostBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-sm text-white bg-blue-600 hover:bg-blue-700">Adicionar Custo</button></div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2">
+                        <div class="glass-effect p-4 sm:p-6 rounded-lg">
+                            <h2 class="text-xl font-semibold font-orbitron mb-5">Histórico de Custos</h2>
+                            <div class="overflow-x-auto"><table class="min-w-full"><thead class="border-b" style="border-color: var(--border-color);"><tr><th class="px-4 py-3 text-left text-xs font-medium uppercase">Data</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Descrição</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Categoria</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Valor</th><th class="px-4 py-3 text-center text-xs font-medium uppercase">Ações</th></tr></thead><tbody id="costsList"></tbody></table></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- PÁGINA VENDAS -->
             <div id="vendasPage">
                  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-1"><div class="glass-effect rounded-lg p-6 h-full flex flex-col"><h2 class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);">Registrar Venda</h2><div class="flex-grow space-y-4"><div class="flex items-end gap-2"><div class="relative flex-grow"><label class="block text-sm font-medium mb-1">Produto</label><input type="text" id="sale-product-search" placeholder="Pesquisar..." class="custom-input"><div id="sale-product-results" class="absolute z-10 w-full rounded-md mt-1 hidden max-h-40 overflow-y-auto border" style="border-color: var(--input-border);"><div class="search-results-option"></div></div></div><div class="flex-shrink-0"><label class="block text-sm font-medium mb-1">Qtd.</label><input type="number" id="sale-quantity" value="1" min="1" class="custom-input w-20 text-center"></div><button id="addToCartBtn" class="bg-blue-600 p-2 rounded-md text-white hover:bg-blue-700 h-10 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/></svg></button></div><div id="cart" class="border-t border-b py-2 space-y-2 flex-grow overflow-y-auto max-h-72" style="border-color: var(--border-color);"><ul id="cart-items" class="space-y-2"></ul></div></div><div class="mt-auto pt-4"><div class="flex justify-between font-bold text-lg mb-4"><span>TOTAL:</span><span id="cart-total">R$ 0,00</span></div><button id="finalizeSaleBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-sm text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-500">Finalizar Venda</button><div id="sale-feedback" class="mt-4 text-center"></div></div></div></div>
-                    <div class="lg:col-span-2"><div class="glass-effect p-4 sm:p-6 rounded-lg"><div class="flex flex-col sm:flex-row justify-between items-center mb-5 gap-4 flex-wrap"><h2 class="text-xl font-semibold font-orbitron w-full text-center sm:w-auto sm:text-left">Histórico de Vendas</h2><div class="w-full sm:w-auto flex flex-col gap-2"><div class="grid grid-cols-1 sm:grid-cols-2 gap-2"><div><label for="filterStartDate" class="block text-xs font-semibold text-gray-400 uppercase">De:</label><input type="date" id="filterStartDate" class="custom-input w-full mt-1"></div><div><label for="filterEndDate" class="block text-xs font-semibold text-gray-400 uppercase">Até:</label><input type="date" id="filterEndDate" class="custom-input w-full mt-1"></div></div><div class="grid grid-cols-2 gap-2"><button id="filterTodayBtn" class="px-3 py-2 text-sm rounded-md" style="background-color: var(--btn-bg);">Hoje</button><button id="resetFilterBtn" class="px-3 py-2 text-sm rounded-md" style="background-color: var(--btn-bg);">Limpar</button></div></div></div><div class="overflow-x-auto"><table class="min-w-full"><thead class="border-b" style="border-color: var(--border-color);"><tr><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Data</th><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Itens</th><th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider">Pagamento</th><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Total</th><th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider">Ações</th></tr></thead><tbody id="vendasList"></tbody></table></div></div></div>
+                     <div class="lg:col-span-1"><div class="glass-effect rounded-lg p-6 h-full flex flex-col"><h2 class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);">Registrar Venda</h2><div class="flex-grow space-y-4"><div class="flex items-end gap-2"><div class="relative flex-grow"><label class="block text-sm font-medium mb-1">Produto</label><input type="text" id="sale-product-search" placeholder="Pesquisar..." class="custom-input"><div id="sale-product-results" class="absolute z-10 w-full rounded-md mt-1 hidden max-h-40 overflow-y-auto border" style="border-color: var(--input-border);"><div class="search-results-option"></div></div></div><div class="flex-shrink-0"><label class="block text-sm font-medium mb-1">Qtd.</label><input type="number" id="sale-quantity" value="1" min="1" class="custom-input w-20 text-center"></div><button id="addToCartBtn" class="bg-blue-600 p-2 rounded-md text-white hover:bg-blue-700 h-10 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/></svg></button></div><div id="cart" class="border-t border-b py-2 space-y-2 flex-grow overflow-y-auto max-h-72" style="border-color: var(--border-color);"><ul id="cart-items" class="space-y-2"></ul></div></div><div class="mt-auto pt-4"><div class="flex justify-between font-bold text-lg mb-4"><span>TOTAL:</span><span id="cart-total">R$ 0,00</span></div><button id="finalizeSaleBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-sm text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-500">Finalizar Venda</button><div id="sale-feedback" class="mt-4 text-center"></div></div></div></div>
+                     <div class="lg:col-span-2"><div class="glass-effect p-4 sm:p-6 rounded-lg"><div class="flex flex-col sm:flex-row justify-between items-center mb-5 gap-4 flex-wrap"><h2 class="text-xl font-semibold font-orbitron w-full text-center sm:w-auto sm:text-left">Histórico de Vendas</h2><div class="w-full sm:w-auto flex items-center gap-2 flex-wrap justify-center"><div class="flex items-center gap-2 flex-grow sm:flex-grow-0"><label for="filterStartDate" class="text-sm flex-shrink-0">De:</label><input type="date" id="filterStartDate" class="custom-input"></div><div class="flex items-center gap-2 flex-grow sm:flex-grow-0"><label for="filterEndDate" class="text-sm flex-shrink-0">Até:</label><input type="date" id="filterEndDate" class="custom-input"></div><div class="flex gap-2"><button id="filterTodayBtn" class="px-3 py-1.5 text-sm rounded-md" style="background-color: var(--btn-bg);">Hoje</button><button id="resetFilterBtn" class="px-3 py-1.5 text-sm rounded-md" style="background-color: var(--btn-bg);">Limpar</button></div></div></div><div class="overflow-x-auto"><table class="min-w-full"><thead class="border-b" style="border-color: var(--border-color);"><tr><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Data</th><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Itens</th><th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider">Pagamento</th><th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Total</th><th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider">Ações</th></tr></thead><tbody id="vendasList"></tbody></table></div></div></div>
                 </div>
             </div>
         </main>
@@ -138,29 +204,34 @@
     <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md text-center"><h2 class="text-2xl font-semibold mb-5 text-yellow-400 font-orbitron">Confirmar Exclusão</h2><p class="mb-6">Tem certeza de que deseja apagar este produto?</p><div class="flex gap-4 pt-4"><button type="button" id="cancelDelete" class="w-full justify-center py-2 px-4 border rounded-md shadow-sm text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="button" id="confirmDelete" class="w-full justify-center py-2 px-4 border-transparent rounded-md shadow-sm text-sm text-white bg-red-600 hover:bg-red-700">Apagar</button></div></div></div>
     <div id="restockModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-sm"><h2 class="text-2xl font-semibold mb-2 font-orbitron" style="color: var(--text-title);">Repor Estoque</h2><p id="restockProductName" class="mb-4 text-gray-400"></p><form id="restockForm"><input type="hidden" id="restock-id"><label class="modal-label block text-sm font-medium">Quantidade a adicionar</label><input type="number" id="restock-quantity" min="1" required class="custom-input mt-1"><div class="flex gap-4 pt-4"><button type="button" id="cancelRestock" class="w-full justify-center py-2 px-4 border rounded-md text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-sm text-white bg-blue-600 hover:bg-blue-700">Confirmar</button></div></form></div></div>
     <div id="shoppingListModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-2xl flex flex-col h-full max-h-[90vh]"><h2 class="text-2xl font-semibold mb-4 font-orbitron text-center" style="color: var(--text-title);">Preparar Lista de Compras</h2><div class="flex-grow overflow-y-auto pr-2"><ul id="editableShoppingList" class="space-y-2"></ul></div><div class="pt-4 border-t" style="border-color: var(--border-color);"><h3 class="font-semibold mb-2">Adicionar Item</h3><form id="addShoppingItemForm" class="grid grid-cols-1 md:grid-cols-2 gap-2 items-end"><div class="relative"><label class="modal-label text-xs">Buscar Item Cadastrado</label><input type="text" id="shopping-item-search" placeholder="Pesquisar ou digitar novo item..." class="custom-input w-full"><div id="shopping-item-results" class="absolute z-20 w-full rounded-md mt-1 hidden max-h-40 overflow-y-auto border" style="border-color: var(--input-border);"></div></div><div class="flex items-end gap-2"><div class="flex-grow"><label class="modal-label text-xs">Qtd.</label><input type="number" id="shopping-item-qty" value="1" min="1" class="custom-input"></div><button type="submit" class="bg-blue-600 p-2 rounded-md text-white hover:bg-blue-700 h-10">Adicionar</button></div></form></div><div class="flex gap-4 pt-6 mt-auto"><button type="button" id="closeShoppingListModal" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Fechar</button><button type="button" id="exportShoppingListPdfBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-green-600 hover:bg-green-700">Salvar e Exportar PDF</button></div></div></div>
-    <div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-lg"><h2 class="text-2xl font-semibold mb-2 font-orbitron" style="color: var(--text-title);">Pagamento</h2><div class="flex justify-between items-baseline mb-4"><span class="text-lg">Total: <span id="paymentTotal"></span></span><span class="text-lg font-bold text-red-400">Restante: <span id="paymentRemaining"></span></span></div><div id="payments-made-list" class="mb-4 space-y-2 text-sm"></div><form id="addPaymentForm" class="flex items-end gap-2"><div class="flex-grow"><label class="modal-label text-xs">Valor</label><input type="number" id="payment-amount" step="0.01" min="0" class="custom-input" required></div><div><label class="modal-label text-xs">Forma</label><select id="payment-method" class="custom-select"><option>Dinheiro</option><option>Crédito</option><option>Débito</option><option>Pix</option></select></div><button type="submit" class="bg-blue-600 p-2 rounded-md text-white hover:bg-blue-700 h-10">Adicionar</button></form><div class="text-lg mt-4 font-bold text-green-400">Troco: <span id="paymentChange">R$ 0,00</span></div><div class="flex gap-4 pt-6 mt-auto"><button type="button" id="cancelPayment" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="button" id="confirmPaymentBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-500" disabled>Finalizar Venda</button></div></div></div>
-    <div id="passwordModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-sm"><h2 class="text-2xl font-semibold mb-4 font-orbitron" style="color: var(--text-title);">Acesso Restrito</h2><p class="text-sm mb-4">Digite a senha para editar a venda.</p><form id="passwordForm"><input type="password" id="passwordInput" class="custom-input w-full"><p id="passwordError" class="text-red-500 text-xs mt-1 h-4"></p><div class="flex gap-4 pt-4"><button type="button" id="cancelPassword" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700">Entrar</button></div></form></div></div>
+    <div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-lg"><h2 class="text-2xl font-semibold mb-2 font-orbitron" style="color: var(--text-title);">Pagamento</h2><div class="flex justify-between items-baseline mb-4"><span class="text-lg">Total: <span id="paymentTotal"></span></span><span class="text-lg font-bold text-red-400">Restante: <span id="paymentRemaining"></span></span></div><div id="payments-made-list" class="mb-4 space-y-2 text-sm"></div><form id="addPaymentForm" class="flex items-end gap-2"><div class="flex-grow"><label class="modal-label text-xs">Valor</label><input type="number" id="payment-amount" step="0.01" min="0" class="custom-input" required></div><div><label class="modal-label text-xs">Forma</label><select id="payment-method" class="custom-select"><option>Dinheiro</option><option>Crédito</option><option>Débito</option><option>Pix</option></select></div><button type="submit" class="bg-blue-600 p-2 rounded-md text-white hover:bg-blue-700 h-10">Adicionar</button></form><div class="text-lg mt-4 font-bold text-green-400 hidden">Troco: <span id="paymentChange">R$ 0,00</span></div><div class="flex gap-4 pt-6 mt-auto"><button type="button" id="cancelPayment" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="button" id="confirmPaymentBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-500" disabled>Finalizar Venda</button></div></div></div>
+    <div id="passwordModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-sm"><h2 class="text-2xl font-semibold mb-4 font-orbitron" style="color: var(--text-title);">Acesso Restrito</h2><p class="text-sm mb-4">Digite a senha de administrador.</p><form id="passwordForm"><input type="password" id="passwordInput" class="custom-input w-full"><p id="passwordError" class="text-red-500 text-xs mt-1 h-4"></p><div class="flex gap-4 pt-4"><button type="button" id="cancelPassword" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700">Entrar</button></div></form></div></div>
+    <div id="saleDetailsModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-lg"><h2 class="text-2xl font-semibold mb-4 font-orbitron" style="color: var(--text-title);">Detalhes da Venda</h2><div id="saleDetailsContent" class="space-y-4 text-sm"></div><div class="flex justify-end pt-6 mt-auto"><button type="button" id="closeSaleDetailsModal" class="w-full sm:w-auto justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Fechar</button></div></div></div>
+    <div id="confirmCancelModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md text-center"><h2 class="text-2xl font-semibold mb-5 text-yellow-400 font-orbitron">Cancelar Venda</h2><p class="mb-6">Tem certeza que deseja cancelar esta venda? Os itens retornarão ao estoque.</p><div class="flex gap-4 pt-4"><button type="button" id="cancelCancellation" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Não</button><button type="button" id="confirmCancellation" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-red-600 hover:bg-red-700">Sim, Cancelar</button></div></div></div>
+    <div id="reportModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-lg"><h2 class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);">Gerar Relatório</h2><form id="reportForm" class="space-y-4"><div><label class="modal-label block text-sm font-medium">Tipo de Relatório</label><select id="reportType" class="custom-select mt-1"><option value="geral">Geral (Balanço)</option><option value="vendas">Vendas</option><option value="custos">Custos</option></select></div><div class="grid grid-cols-2 gap-4"><div><label class="modal-label block text-sm font-medium">Data Inicial</label><input type="date" id="reportStartDate" class="custom-input mt-1" required></div><div><label class="modal-label block text-sm font-medium">Data Final</label><input type="date" id="reportEndDate" class="custom-input mt-1" required></div></div><div class="flex gap-4 pt-4"><button type="button" id="cancelReport" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700">Gerar PDF</button></div></form></div></div>
     
     <script type="module">
         const { jsPDF } = window.jspdf;
         // --- DADOS DE DEMONSTRAÇÃO ---
         let mockProdutos = [ { Id: 1, nome: 'Brigadeiro Gourmet', categoria: 'Doces', marca: 'Lumi', unidade: 'Unidade', preco: 4.50, estoque: 50, estoqueMinimo: 10 }, { Id: 2, nome: 'Caixa de Bombom', categoria: 'Chocolates', marca: 'Nestlé', unidade: 'Caixa', preco: 25.00, estoque: 8, estoqueMinimo: 5 }, { Id: 3, nome: 'Bala de Goma (100g)', categoria: 'Balas', marca: 'Fini', unidade: 'Pacote', preco: 6.00, estoque: 80, estoqueMinimo: 20 }, { Id: 4, nome: 'Pirulito Colorido', categoria: 'Balas', marca: 'Lumi', unidade: 'Unidade', preco: 1.50, estoque: 120, estoqueMinimo: 50 }, { Id: 5, nome: 'Barra de Chocolate Amargo', categoria: 'Chocolates', marca: 'Cacau Show', unidade: 'Unidade', preco: 12.00, estoque: 0, estoqueMinimo: 10 }, { Id: 6, nome: 'Paçoca', categoria: 'Doces', marca: 'Santa Helena', unidade: 'Unidade', preco: 2.00, estoque: 45, estoqueMinimo: 15 }, ];
-        let mockVendas = [ { Id: 101, items: [{produtoId: 3, produtoNome: "Bala de Goma (100g)", quantidade: 2, precoUnitario: 6.00}], total: 12.00, pagamentos: [{method: 'Débito', amount: 12.00}], data: '2025-07-23T10:00:00Z', edited: false }, { Id: 102, items: [{produtoId: 1, produtoNome: "Brigadeiro Gourmet", quantidade: 5, precoUnitario: 4.50}], total: 22.50, pagamentos: [{method: 'Pix', amount: 22.50}], data: '2025-08-15T14:30:00Z', edited: false }, { Id: 103, items: [{produtoId: 2, produtoNome: "Caixa de Bombom", quantidade: 1, precoUnitario: 25.00}, {produtoId: 4, produtoNome: "Pirulito Colorido", quantidade: 10, precoUnitario: 1.50}], total: 40.00, pagamentos: [{method: 'Crédito', amount: 40.00}], data: '2025-09-24T18:00:00Z', edited: false }, ];
-        let nextProductId = 7, nextVendaId = 104;
+        let mockVendas = [ { Id: 101, items: [{produtoId: 3, produtoNome: "Bala de Goma (100g)", quantidade: 2, precoUnitario: 6.00}], total: 12.00, pagamentos: [{method: 'Débito', amount: 12.00}], data: '2025-07-23T10:00:00Z', edited: false, status: 'completed' }, { Id: 102, items: [{produtoId: 1, produtoNome: "Brigadeiro Gourmet", quantidade: 5, precoUnitario: 4.50}], total: 22.50, pagamentos: [{method: 'Pix', amount: 22.50}], data: '2025-08-15T14:30:00Z', edited: false, status: 'completed' }, { Id: 103, items: [{produtoId: 2, produtoNome: "Caixa de Bombom", quantidade: 1, precoUnitario: 25.00}, {produtoId: 4, produtoNome: "Pirulito Colorido", quantidade: 10, precoUnitario: 1.50}], total: 40.00, pagamentos: [{method: 'Crédito', amount: 40.00}], data: '2025-09-24T18:00:00Z', edited: false, status: 'completed' }, ];
+        let mockCustos = [ {Id: 1, descricao: "Aluguel Loja", categoria: "Fixo", data: "2025-09-05T00:00:00Z", valor: 1500.00}, {Id: 2, descricao: "Compra de Chocolate", categoria: "Matéria Prima", data: "2025-09-10T00:00:00Z", valor: 350.75}, {Id: 3, descricao: "Conta de Energia", categoria: "Variável", data: "2025-09-20T00:00:00Z", valor: 280.50} ];
+        let nextProductId = 7, nextVendaId = 104, nextCustoId = 4;
         
         // --- API SIMULADA ---
-        const api = { getProdutos: async () => ({ list: [...mockProdutos] }), getVendas: async () => ({ list: [...mockVendas] }), patchProduto: async (id, data) => { const i = mockProdutos.findIndex(p=>p.Id===id); if(i>-1){ mockProdutos[i]={...mockProdutos[i],...data}; return mockProdutos[i]; } throw new Error("Produto não encontrado."); }, postProduto: async (data) => { const newProd = { ...data, Id: nextProductId++ }; mockProdutos.push(newProd); return newProd; }, deleteProduto: async (id) => { mockProdutos = mockProdutos.filter(p=>p.Id!==id); return { success: true }; }, postVenda: async (data) => { const newSale = { ...data, Id: nextVendaId++ }; mockVendas.push(newSale); return newSale; }, patchVenda: async(id, data) => { const i = mockVendas.findIndex(v=>v.Id===id); if(i>-1){ mockVendas[i]={...mockVendas[i],...data}; return mockVendas[i];} throw new Error("Venda não encontrada.")} };
+        const api = { getProdutos: async () => ({ list: [...mockProdutos] }), getVendas: async () => ({ list: [...mockVendas] }), getCustos: async () => ({ list: [...mockCustos] }), patchProduto: async (id, data) => { const i = mockProdutos.findIndex(p=>p.Id===id); if(i>-1){ mockProdutos[i]={...mockProdutos[i],...data}; return mockProdutos[i]; } throw new Error("Produto não encontrado."); }, postProduto: async (data) => { const newProd = { ...data, Id: nextProductId++ }; mockProdutos.push(newProd); return newProd; }, deleteProduto: async (id) => { mockProdutos = mockProdutos.filter(p=>p.Id!==id); return { success: true }; }, postVenda: async (data) => { const newSale = { ...data, Id: nextVendaId++ }; mockVendas.push(newSale); return newSale; }, patchVenda: async(id, data) => { const i = mockVendas.findIndex(v=>v.Id===id); if(i>-1){ mockVendas[i]={...mockVendas[i],...data}; return mockVendas[i];} throw new Error("Venda não encontrada.")}, postCusto: async (data) => { const newCost = { ...data, Id: nextCustoId++ }; mockCustos.push(newCost); return newCost; }, patchCusto: async (id, data) => { const i = mockCustos.findIndex(c => c.Id === id); if (i > -1) { mockCustos[i] = { ...mockCustos[i], ...data }; return mockCustos[i]; } throw new Error("Custo não encontrado."); }, deleteCusto: async (id) => { mockCustos = mockCustos.filter(c => c.Id !== id); return { success: true }; } };
 
         // --- ESTADO DA APLICAÇÃO ---
-        let allProdutos = [], allVendas = [], currentCart = [];
+        let allProdutos = [], allVendas = [], allCustos = [], currentCart = [];
         let charts = {};
         let selectedProductForSale = null;
         let saleToEditId = null;
+        let actionAfterPassword = null;
         let isEditingSale = false;
         let currentPayments = [];
 
         // --- SELETORES DE UI ---
-        const pageDashboardBtn = document.getElementById('pageDashboardBtn'), pageEstoqueBtn = document.getElementById('pageEstoqueBtn'), pageVendasBtn = document.getElementById('pageVendasBtn');
+        const pageDashboardBtn = document.getElementById('pageDashboardBtn'), pageEstoqueBtn = document.getElementById('pageEstoqueBtn'), pageVendasBtn = document.getElementById('pageVendasBtn'), pageCustosBtn = document.getElementById('pageCustosBtn');
         const themeToggleBtn = document.getElementById('themeToggleBtn');
         const sunIcon = document.getElementById('theme-icon-sun'), moonIcon = document.getElementById('theme-icon-moon');
         const addProdutoBtn = document.getElementById('addProdutoBtn');
@@ -171,7 +242,10 @@
         const shoppingItemSearch = document.getElementById('shopping-item-search'), shoppingItemResults = document.getElementById('shopping-item-results');
         const paymentModal = document.getElementById('paymentModal'), addPaymentForm = document.getElementById('addPaymentForm'), cancelPayment = document.getElementById('cancelPayment'), confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
         const passwordModal = document.getElementById('passwordModal'), passwordForm = document.getElementById('passwordForm'), cancelPassword = document.getElementById('cancelPassword');
-        const estoqueList = document.getElementById('estoqueList'), vendasList = document.getElementById('vendasList');
+        const saleDetailsModal = document.getElementById('saleDetailsModal'), closeSaleDetailsModal = document.getElementById('closeSaleDetailsModal');
+        const confirmCancelModal = document.getElementById('confirmCancelModal'), cancelCancellation = document.getElementById('cancelCancellation'), confirmCancellation = document.getElementById('confirmCancellation');
+        const estoqueList = document.getElementById('estoqueList'), vendasList = document.getElementById('vendasList'), costsList = document.getElementById('costsList');
+        const addCostForm = document.getElementById('addCostForm'), saveCostBtn = document.getElementById('saveCostBtn');
         const saleProductSearchInput = document.getElementById('sale-product-search'), saleProductResults = document.getElementById('sale-product-results');
         const saleQuantityInput = document.getElementById('sale-quantity'), addToCartBtn = document.getElementById('addToCartBtn'), cartItemsList = document.getElementById('cart-items'), cartTotalEl = document.getElementById('cart-total'), finalizeSaleBtn = document.getElementById('finalizeSaleBtn');
         const saleFeedback = document.getElementById('sale-feedback');
@@ -179,6 +253,8 @@
         const filterStartDate = document.getElementById('filterStartDate'), filterEndDate = document.getElementById('filterEndDate');
         const filterTodayBtn = document.getElementById('filterTodayBtn'), resetFilterBtn = document.getElementById('resetFilterBtn');
         const dashboardFilterStartDate = document.getElementById('dashboardFilterStartDate'), dashboardFilterEndDate = document.getElementById('dashboardFilterEndDate');
+        const generateReportBtn = document.getElementById('generateReportBtn'), reportModal = document.getElementById('reportModal'), reportForm = document.getElementById('reportForm'), cancelReport = document.getElementById('cancelReport');
+        const loginPage = document.getElementById('loginPage'), appWrapper = document.getElementById('app-wrapper'), loginForm = document.getElementById('loginForm');
 
         // --- FUNÇÕES UTILITÁRIAS ---
         const formatCurrency = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
@@ -192,41 +268,98 @@
             }).join('') : `<tr><td colspan="6" class="p-4 text-center">Nenhum produto encontrado.</td></tr>`;
         };
 
+        const renderCustosView = (custos) => {
+            costsList.innerHTML = custos.length ? custos.sort((a,b) => new Date(b.data) - new Date(a.data)).map(c => `
+                <tr class="border-b" style="border-color: var(--border-color);">
+                    <td class="px-4 py-3 text-sm">${new Date(c.data).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</td>
+                    <td class="px-4 py-3 text-sm text-gray-400">${c.descricao}</td>
+                    <td class="px-4 py-3 text-sm text-gray-400">${c.categoria}</td>
+                    <td class="px-4 py-3 text-sm text-gray-400">${formatCurrency(c.valor)}</td>
+                    <td class="px-4 py-3 text-center"><div class="flex items-center justify-center gap-1">
+                        <button class="action-btn edit-cost-btn" data-item='${JSON.stringify(c)}' title="Editar Custo"><svg class="pointer-events-none text-blue-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V12h2.293z"/></svg></button>
+                        <button class="action-btn delete-cost-btn" data-id="${c.Id}" title="Apagar Custo"><svg class="pointer-events-none text-red-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/></svg></button>
+                    </div></td>
+                </tr>
+            `).join('') : `<tr><td colspan="5" class="p-4 text-center">Nenhum custo encontrado.</td></tr>`;
+        };
+
         const renderVendasView = (vendas) => {
-            vendasList.innerHTML = vendas.length ? vendas.sort((a, b) => new Date(b.data) - new Date(a.data)).map(v => `<tr class="border-b" style="border-color: var(--border-color);"><td class="px-4 py-3 text-sm">${new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(v.data))} ${v.edited ? '<span class="text-xs text-yellow-400">(Editada)</span>' : ''}</td><td class="px-4 py-3 text-sm text-gray-400">${v.items.map(i => `${i.quantidade}x ${i.produtoNome}`).join(', ')}</td><td class="px-4 py-3 text-sm text-center text-gray-400">${v.pagamentos.map(p=>p.method).join(', ')}</td><td class="px-4 py-3 text-sm text-gray-400">${formatCurrency(v.total)}</td><td class="px-4 py-3 text-center"><button class="action-btn edit-sale-btn" data-id="${v.Id}" title="Editar Venda"><svg class="pointer-events-none text-blue-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V12h2.293z"/></svg></button></td></tr>`).join('') : `<tr><td colspan="5" class="p-4 text-center">Nenhuma venda encontrada.</td></tr>`;
+            vendasList.innerHTML = vendas.length ? vendas.sort((a, b) => new Date(b.data) - new Date(a.data)).map(v => {
+                const isCancelled = v.status === 'cancelled';
+                return `
+                <tr class="border-b ${isCancelled ? 'opacity-50' : ''}" style="border-color: var(--border-color);">
+                    <td class="px-4 py-3 text-sm">
+                        ${new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(v.data))} 
+                        ${v.edited ? '<span class="text-xs text-yellow-400">(Editada)</span>' : ''}
+                        ${isCancelled ? '<span class="text-xs text-red-400 font-bold">(CANCELADA)</span>' : ''}
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-400 ${isCancelled ? 'line-through' : ''}">${v.items.map(i => `${i.quantidade}x ${i.produtoNome}`).join(', ')}</td>
+                    <td class="px-4 py-3 text-sm text-center text-gray-400 ${isCancelled ? 'line-through' : ''}">${v.pagamentos.map(p=>p.method).join(', ')}</td>
+                    <td class="px-4 py-3 text-sm text-gray-400 ${isCancelled ? 'line-through' : ''}">${formatCurrency(v.total)}</td>
+                    <td class="px-4 py-3 text-center">
+                        <div class="flex items-center justify-center gap-1">
+                             <button class="action-btn view-sale-details-btn" data-id="${v.Id}" title="Ver Detalhes">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="pointer-events-none text-gray-400" viewBox="0 0 16 16"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/></svg>
+                             </button>
+                            ${!isCancelled ? `
+                            <button class="action-btn edit-sale-btn" data-id="${v.Id}" title="Editar Venda">
+                                <svg class="pointer-events-none text-blue-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V12h2.293z"/></svg>
+                            </button>
+                            <button class="action-btn cancel-sale-btn" data-id="${v.Id}" title="Cancelar Venda">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="pointer-events-none text-red-400" viewBox="0 0 16 16"><path d="M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z"/></svg>
+                            </button>
+                            ` : ''}
+                        </div>
+                    </td>
+                </tr>
+            `}).join('') : `<tr><td colspan="5" class="p-4 text-center">Nenhuma venda encontrada.</td></tr>`;
         };
         
-        const renderDashboard = (vendasData, produtosData) => {
-            document.getElementById('metricTotalRevenue').textContent = formatCurrency(vendasData.reduce((s, v) => s + v.total, 0));
-            document.getElementById('metricItemsSold').textContent = vendasData.reduce((s, v) => s + v.items.reduce((si, i) => si + i.quantidade, 0), 0);
-            document.getElementById('metricTotalSales').textContent = vendasData.length;
-            const totalRevenue = vendasData.reduce((s, v) => s + v.total, 0);
-            document.getElementById('metricAvgTicket').textContent = vendasData.length ? formatCurrency(totalRevenue / vendasData.length) : formatCurrency(0);
-
-            const categoryCounts = produtosData.reduce((acc, p) => { acc[p.categoria] = (acc[p.categoria] || 0) + 1; return acc; }, {});
-            document.getElementById('categoryProductCount').innerHTML = Object.entries(categoryCounts).map(([cat, count]) => `<div class="glass-effect p-3 rounded-lg text-center"><p class="text-xs font-semibold text-gray-400 uppercase">${cat}</p><p class="text-xl font-bold">${count}</p></div>`).join('');
+        const renderDashboard = (vendasData, produtosData, custosData) => {
+            const completedVendas = vendasData.filter(v => v.status === 'completed');
+            const cancelledVendas = vendasData.filter(v => v.status === 'cancelled');
             
-            const paymentData = vendasData.reduce((acc, v) => { v.pagamentos.forEach(p => { acc[p.method] = (acc[p.method] || 0) + p.amount; }); return acc; }, {});
-            document.getElementById('paymentMethodCards').innerHTML = ['Crédito', 'Débito', 'Pix', 'Dinheiro'].map(method => `<div class="glass-effect p-4 rounded-lg text-center"><h4 class="text-sm font-semibold text-gray-400 uppercase">${method}</h4><p class="text-xl font-bold">${formatCurrency(paymentData[method] || 0)}</p></div>`).join('');
+            // Balanço
+            const receitaBruta = completedVendas.reduce((s, v) => s + v.total, 0);
+            const custoTotal = custosData.reduce((s, c) => s + c.valor, 0);
+            const lucroBruto = receitaBruta - custoTotal;
+            const margemLucro = receitaBruta > 0 ? (lucroBruto / receitaBruta) * 100 : 0;
+            document.getElementById('balancoReceita').textContent = formatCurrency(receitaBruta);
+            document.getElementById('balancoCustos').textContent = formatCurrency(custoTotal);
+            document.getElementById('balancoLucro').textContent = formatCurrency(lucroBruto);
+            document.getElementById('balancoMargem').textContent = `${margemLucro.toFixed(2)}%`;
             
-            const renderChart = (id, type, data, options) => { if (charts[id]) charts[id].destroy(); charts[id] = new Chart(document.getElementById(id).getContext('2d'), { type, data, options }); };
+            // Vendas
+            document.getElementById('metricTotalSales').textContent = completedVendas.length;
+            document.getElementById('metricItemsSold').textContent = completedVendas.reduce((s, v) => s + v.items.reduce((si, i) => si + i.quantidade, 0), 0);
+            document.getElementById('metricAvgTicket').textContent = completedVendas.length ? formatCurrency(receitaBruta / completedVendas.length) : formatCurrency(0);
+            document.getElementById('metricCancelledSales').textContent = cancelledVendas.length;
             
-            const categoryData = vendasData.reduce((acc, v) => { v.items.forEach(i => { const p = allProdutos.find(prod => prod.Id === i.produtoId); if (p) acc[p.categoria] = (acc[p.categoria] || 0) + (i.quantidade * i.precoUnitario); }); return acc; }, {});
+            const renderChart = (id, type, data, options) => { if (charts[id]) charts[id].destroy(); const ctx = document.getElementById(id); if (ctx) { charts[id] = new Chart(ctx.getContext('2d'), { type, data, options }); }};
+            
+            const categoryData = completedVendas.reduce((acc, v) => { v.items.forEach(i => { const p = allProdutos.find(prod => prod.Id === i.produtoId); if (p) acc[p.categoria] = (acc[p.categoria] || 0) + (i.quantidade * i.precoUnitario); }); return acc; }, {});
             renderChart('categorySalesChart', 'doughnut', { labels: Object.keys(categoryData), datasets: [{ data: Object.values(categoryData), backgroundColor: ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'], borderWidth: 0, hoverOffset: 8 }] }, { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: Chart.defaults.color } }, tooltip: { callbacks: { label: (c) => `${c.label}: ${formatCurrency(c.raw)}` } } } });
             
-            const topProductsData = vendasData.reduce((acc, v) => { v.items.forEach(i => { acc[i.produtoNome] = (acc[i.produtoNome] || 0) + (i.quantidade * i.precoUnitario); }); return acc; }, {});
+            const topProductsData = completedVendas.reduce((acc, v) => { v.items.forEach(i => { acc[i.produtoNome] = (acc[i.produtoNome] || 0) + (i.quantidade * i.precoUnitario); }); return acc; }, {});
             const sortedProducts = Object.entries(topProductsData).sort(([,a],[,b]) => b-a).slice(0, 5);
             renderChart('topProductsChart', 'bar', { labels: sortedProducts.map(p=>p[0]), datasets: [{ label: 'Faturamento', data: sortedProducts.map(p=>p[1]), backgroundColor: '#3b82f6', borderRadius: 4 }] }, { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => formatCurrency(ctx.raw) } } }, scales: { x: { ticks: { color: Chart.defaults.color, callback: (v) => formatCurrency(v) }, grid: { color: Chart.defaults.borderColor } }, y: { ticks: { color: Chart.defaults.color }, grid: { display: false } } } });
             
             const salesByWeekday = Array(7).fill(0); const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-            vendasData.forEach(v => { const day = new Date(v.data).getDay(); salesByWeekday[day] += v.total; });
+            completedVendas.forEach(v => { const day = new Date(v.data).getUTCDay(); salesByWeekday[day] += v.total; });
             renderChart('salesByWeekdayChart', 'bar', { labels: weekdays, datasets: [{ label: 'Faturamento', data: salesByWeekday, backgroundColor: ['#8b5cf6', '#3b82f6', '#10b981', '#ef4444', '#f59e0b', '#3b82f6', '#8b5cf6'], borderRadius: 4 }] }, { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => formatCurrency(ctx.raw) } } }, scales: { x: { ticks: { color: Chart.defaults.color }, grid: { display: false } }, y: { ticks: { color: Chart.defaults.color, callback: (v) => formatCurrency(v) }, grid: { color: Chart.defaults.borderColor } } } });
-            
-            const monthlySales = {};
-            for(let i=0; i < 12; i++) { const d = new Date(); d.setMonth(d.getMonth() - i); monthlySales[`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`] = 0; }
-            vendasData.forEach(v => { const d = new Date(v.data); const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; if(monthlySales.hasOwnProperty(key)) monthlySales[key] += v.total; });
-            const sortedMonths = Object.entries(monthlySales).reverse();
-            renderChart('monthlySalesChart', 'line', { labels: sortedMonths.map(m=>m[0]), datasets: [{ label: 'Faturamento Mensal', data: sortedMonths.map(m=>m[1]), borderColor: '#10b981', tension: 0.1, fill: false }] }, { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => formatCurrency(ctx.raw) } } }, scales: { x: { ticks: { color: Chart.defaults.color }, grid: { color: Chart.defaults.borderColor } }, y: { ticks: { color: Chart.defaults.color, callback: (v) => formatCurrency(v) }, grid: { color: Chart.defaults.borderColor } } } });
+
+            const paymentData = completedVendas.reduce((acc, v) => { v.pagamentos.forEach(p => { acc[p.method] = (acc[p.method] || 0) + p.amount; }); return acc; }, {});
+            renderChart('paymentMethodChart', 'pie', { labels: Object.keys(paymentData), datasets: [{ data: Object.values(paymentData), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'], borderWidth: 0, hoverOffset: 8 }] }, { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: Chart.defaults.color } }, tooltip: { callbacks: { label: (c) => `${c.label}: ${formatCurrency(c.raw)}` } } } });
+
+            const monthlySales = {}, monthlyCosts = {};
+            for(let i=11; i >= 0; i--) { const d = new Date(); d.setMonth(d.getMonth() - i); const key = d.toLocaleString('default', { month: 'short', year: '2-digit' }); monthlySales[key] = 0; monthlyCosts[key] = 0; }
+            completedVendas.forEach(v => { const d = new Date(v.data); const key = d.toLocaleString('default', { month: 'short', year: '2-digit' }); if(monthlySales.hasOwnProperty(key)) monthlySales[key] += v.total; });
+            custosData.forEach(c => { const d = new Date(c.data); const key = d.toLocaleString('default', { month: 'short', year: '2-digit' }); if(monthlyCosts.hasOwnProperty(key)) monthlyCosts[key] += c.valor; });
+            const sortedMonths = Object.keys(monthlySales);
+            renderChart('revenueVsCostsChart', 'bar', { labels: sortedMonths, datasets: [ { label: 'Receita', data: sortedMonths.map(m=>monthlySales[m]), backgroundColor: '#10b981', borderRadius: 4 }, { label: 'Custo', data: sortedMonths.map(m=>monthlyCosts[m]), backgroundColor: '#ef4444', borderRadius: 4 } ] }, { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: {color: Chart.defaults.color}}, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${formatCurrency(ctx.raw)}` } } }, scales: { x: { ticks: { color: Chart.defaults.color }, grid: { display: false } }, y: { ticks: { color: Chart.defaults.color, callback: (v) => formatCurrency(v) }, grid: { color: Chart.defaults.borderColor } } } });
+
+            const costsByCategory = custosData.reduce((acc, c) => { acc[c.categoria] = (acc[c.categoria] || 0) + c.valor; return acc; }, {});
+            renderChart('costsByCategoryChart', 'pie', { labels: Object.keys(costsByCategory), datasets: [{ data: Object.values(costsByCategory), backgroundColor: ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'], borderWidth: 0, hoverOffset: 8 }] }, { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: Chart.defaults.color } }, tooltip: { callbacks: { label: (c) => `${c.label}: ${formatCurrency(c.raw)}` } } } });
         };
         
         const applyFiltersAndRender = () => {
@@ -240,11 +373,19 @@
             if (filterStartDate.value) filteredVendas = filteredVendas.filter(v => new Date(v.data) >= new Date(filterStartDate.value + 'T00:00:00'));
             if (filterEndDate.value) filteredVendas = filteredVendas.filter(v => new Date(v.data) <= new Date(filterEndDate.value + 'T23:59:59'));
             renderVendasView(filteredVendas);
+            renderCustosView(allCustos);
             
-            let dashboardVendas = [...allVendas];
-            if (dashboardFilterStartDate.value) dashboardVendas = dashboardVendas.filter(v => new Date(v.data) >= new Date(dashboardFilterStartDate.value + 'T00:00:00'));
-            if (dashboardFilterEndDate.value) dashboardVendas = dashboardVendas.filter(v => new Date(v.data) <= new Date(dashboardFilterEndDate.value + 'T23:59:59'));
-            renderDashboard(dashboardVendas, allProdutos);
+            let dashboardVendas = allVendas;
+            let dashboardCustos = allCustos;
+            if (dashboardFilterStartDate.value) {
+                dashboardVendas = dashboardVendas.filter(v => new Date(v.data) >= new Date(dashboardFilterStartDate.value + 'T00:00:00'));
+                dashboardCustos = dashboardCustos.filter(c => new Date(c.data) >= new Date(dashboardFilterStartDate.value + 'T00:00:00'));
+            }
+            if (dashboardFilterEndDate.value) {
+                dashboardVendas = dashboardVendas.filter(v => new Date(v.data) <= new Date(dashboardFilterEndDate.value + 'T23:59:59'));
+                dashboardCustos = dashboardCustos.filter(c => new Date(c.data) <= new Date(dashboardFilterEndDate.value + 'T23:59:59'));
+            }
+            renderDashboard(dashboardVendas, allProdutos, dashboardCustos);
         };
         
         const populateFiltersAndForms = () => {
@@ -252,10 +393,10 @@
             filterCategoria.innerHTML = '<option value="todos">Todas Categorias</option>' + categorias.map(c => `<option value="${c}">${c}</option>`).join('');
         };
         
-        const loadData = async () => { try { const [prods, vendas] = await Promise.all([api.getProdutos(), api.getVendas()]); allProdutos = prods.list || []; allVendas = vendas.list || []; populateFiltersAndForms(); applyFiltersAndRender(); } catch (error) { console.error("Erro ao carregar dados:", error); } };
+        const loadData = async () => { try { const [prods, vendas, custos] = await Promise.all([api.getProdutos(), api.getVendas(), api.getCustos()]); allProdutos = prods.list || []; allVendas = vendas.list || []; allCustos = custos.list || []; populateFiltersAndForms(); applyFiltersAndRender(); } catch (error) { console.error("Erro ao carregar dados:", error); } };
         
         const switchPage = (pageId) => {
-            ['Dashboard', 'Estoque', 'Vendas'].forEach(p => { document.getElementById(`${p.toLowerCase()}Page`).classList.add('hidden'); document.getElementById(`page${p}Btn`).classList.remove('page-btn-active'); });
+            ['Dashboard', 'Estoque', 'Vendas', 'Custos'].forEach(p => { document.getElementById(`${p.toLowerCase()}Page`).classList.add('hidden'); document.getElementById(`page${p}Btn`).classList.remove('page-btn-active'); });
             document.getElementById(`${pageId.toLowerCase()}Page`).classList.remove('hidden'); document.getElementById(`page${pageId}Btn`).classList.add('page-btn-active');
         };
 
@@ -327,7 +468,18 @@
             const remaining = total - paid;
             document.getElementById('paymentTotal').textContent = formatCurrency(total);
             document.getElementById('paymentRemaining').textContent = formatCurrency(remaining > 0 ? remaining : 0);
-            document.getElementById('paymentChange').textContent = formatCurrency(remaining < 0 ? -remaining : 0);
+
+            const changeEl = document.getElementById('paymentChange');
+            const hasCashPayment = currentPayments.some(p => p.method === 'Dinheiro');
+            const change = remaining < 0 ? -remaining : 0;
+            
+            if (hasCashPayment && change > 0) {
+                changeEl.textContent = formatCurrency(change);
+                changeEl.parentElement.classList.remove('hidden');
+            } else {
+                changeEl.textContent = formatCurrency(0);
+                changeEl.parentElement.classList.add('hidden');
+            }
             
             document.getElementById('payments-made-list').innerHTML = currentPayments.map(p => `<div>Pagamento: ${p.method} - ${formatCurrency(p.amount)}</div>`).join('');
             confirmPaymentBtn.disabled = remaining > 0;
@@ -356,7 +508,8 @@
                 total: currentCart.reduce((s, i) => s + i.quantidade * i.precoUnitario, 0), 
                 pagamentos: currentPayments, 
                 data: new Date().toISOString(),
-                edited: isEditingSale 
+                edited: isEditingSale,
+                status: 'completed'
             };
             try {
                 await api.postVenda(sale);
@@ -471,11 +624,41 @@
         });
 
         vendasList.addEventListener('click', (e) => {
-            const btn = e.target.closest('.edit-sale-btn');
-            if(btn) {
-                saleToEditId = parseInt(btn.dataset.id);
+            const btn = e.target.closest('button');
+            if(!btn) return;
+
+            saleToEditId = parseInt(btn.dataset.id);
+            if(btn.classList.contains('edit-sale-btn')) {
+                actionAfterPassword = 'editSale';
                 passwordModal.classList.remove('hidden');
                 document.getElementById('passwordInput').focus();
+            } else if (btn.classList.contains('cancel-sale-btn')) {
+                 actionAfterPassword = 'cancelSale';
+                passwordModal.classList.remove('hidden');
+                document.getElementById('passwordInput').focus();
+            } else if (btn.classList.contains('view-sale-details-btn')) {
+                const sale = allVendas.find(v => v.Id === saleToEditId);
+                if(sale) {
+                    const totalPaid = sale.pagamentos.reduce((acc, p) => acc + p.amount, 0);
+                    const change = totalPaid - sale.total;
+                    const content = `
+                        <p><strong>ID da Venda:</strong> ${sale.Id}</p>
+                        <p><strong>Data:</strong> ${new Intl.DateTimeFormat('pt-BR', { dateStyle: 'full', timeStyle: 'short' }).format(new Date(sale.data))}</p>
+                        ${sale.status === 'cancelled' && sale.cancellationDate ? `<p class="text-red-400"><strong>Cancelada em:</strong> ${new Intl.DateTimeFormat('pt-BR', { dateStyle: 'full', timeStyle: 'short' }).format(new Date(sale.cancellationDate))}</p>` : ''}
+                        <hr class="my-2" style="border-color: var(--border-color);">
+                        <p><strong>Itens:</strong></p>
+                        <ul>${sale.items.map(i => `<li>${i.quantidade}x ${i.produtoNome} - ${formatCurrency(i.quantidade * i.precoUnitario)}</li>`).join('')}</ul>
+                        <hr class="my-2" style="border-color: var(--border-color);">
+                        <p><strong>Pagamentos:</strong></p>
+                        <ul>${sale.pagamentos.map(p => `<li>${p.method}: ${formatCurrency(p.amount)}</li>`).join('')}</ul>
+                        <hr class="my-2" style="border-color: var(--border-color);">
+                        <p><strong>Total da Compra:</strong> ${formatCurrency(sale.total)}</p>
+                        <p><strong>Total Pago:</strong> ${formatCurrency(totalPaid)}</p>
+                        ${change > 0 ? `<p class="font-bold text-green-400"><strong>Troco:</strong> ${formatCurrency(change)}</p>` : ''}
+                    `;
+                    document.getElementById('saleDetailsContent').innerHTML = content;
+                    saleDetailsModal.classList.remove('hidden');
+                }
             }
         });
 
@@ -489,21 +672,24 @@
                 passwordModal.classList.add('hidden');
                 
                 const saleToEdit = allVendas.find(v => v.Id === saleToEditId);
-                if (saleToEdit) {
+                
+                if (actionAfterPassword === 'editSale' && saleToEdit) {
                     for(const item of saleToEdit.items) {
                         const product = allProdutos.find(p => p.Id === item.produtoId);
                         await api.patchProduto(item.produtoId, { estoque: product.estoque + item.quantidade });
                     }
-                    
                     mockVendas = mockVendas.filter(v => v.Id !== saleToEditId);
                     currentCart = [...saleToEdit.items];
                     isEditingSale = true;
-                    
                     switchPage('Vendas');
                     updateCart();
                     await loadData();
+                } else if (actionAfterPassword === 'cancelSale' && saleToEdit) {
+                    confirmCancellation.dataset.id = saleToEditId;
+                    confirmCancelModal.classList.remove('hidden');
                 }
                 saleToEditId = null;
+                actionAfterPassword = null;
 
             } else {
                 errorEl.textContent = 'Senha incorreta.';
@@ -515,10 +701,26 @@
             passwordModal.classList.add('hidden');
         });
 
-        [pageDashboardBtn, pageEstoqueBtn, pageVendasBtn].forEach(btn => btn.addEventListener('click', () => switchPage(btn.id.replace('page', '').replace('Btn', ''))));
+        confirmCancellation.addEventListener('click', async (e) => {
+            const saleId = parseInt(e.currentTarget.dataset.id);
+            const saleToCancel = allVendas.find(v => v.Id === saleId);
+            if(saleToCancel) {
+                for(const item of saleToCancel.items) {
+                    const product = allProdutos.find(p => p.Id === item.produtoId);
+                    await api.patchProduto(item.produtoId, { estoque: product.estoque + item.quantidade });
+                }
+                await api.patchVenda(saleId, { status: 'cancelled', cancellationDate: new Date().toISOString() });
+                await loadData();
+            }
+            confirmCancelModal.classList.add('hidden');
+        });
+        cancelCancellation.addEventListener('click', () => confirmCancelModal.classList.add('hidden'));
+
+        [pageDashboardBtn, pageEstoqueBtn, pageVendasBtn, pageCustosBtn].forEach(btn => btn.addEventListener('click', () => switchPage(btn.id.replace('page', '').replace('Btn', ''))));
         [filterCategoria, filterStatusEstoque, searchProdutoInput, filterStartDate, filterEndDate, dashboardFilterStartDate, dashboardFilterEndDate].forEach(el => el.addEventListener('input', applyFiltersAndRender));
         cancelEdit.addEventListener('click', () => addEditModal.classList.add('hidden')); cancelDelete.addEventListener('click', () => deleteModal.classList.add('hidden')); cancelRestock.addEventListener('click', () => { restockModal.classList.add('hidden'); restockForm.reset(); });
         closeShoppingListModal.addEventListener('click', () => shoppingListModal.classList.add('hidden'));
+        closeSaleDetailsModal.addEventListener('click', () => saleDetailsModal.classList.add('hidden'));
         
         const applyTheme = (theme) => {
             document.documentElement.classList.toggle('light-theme', theme === 'light'); document.documentElement.classList.toggle('dark-theme', theme === 'dark');
@@ -530,10 +732,130 @@
             if(allVendas.length) applyFiltersAndRender();
         };
         themeToggleBtn.addEventListener('click', () => applyTheme(localStorage.getItem('theme') === 'dark' ? 'light' : 'dark'));
+        
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            loginPage.classList.add('hidden');
+            appWrapper.classList.remove('hidden');
+        });
+
+        // CUSTOS
+        addCostForm.addEventListener('submit', async(e) => {
+            e.preventDefault();
+            const id = parseInt(addCostForm['cost-id'].value);
+            const data = {
+                descricao: addCostForm['cost-description'].value,
+                categoria: addCostForm['cost-category'].value,
+                data: addCostForm['cost-date'].value,
+                valor: parseFloat(addCostForm['cost-value'].value)
+            };
+            if(id) {
+                await api.patchCusto(id, data);
+            } else {
+                await api.postCusto(data);
+            }
+            addCostForm.reset();
+            addCostForm['cost-id'].value = '';
+            saveCostBtn.textContent = 'Adicionar Custo';
+            await loadData();
+        });
+
+        costsList.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if(!btn) return;
+
+            if (btn.classList.contains('edit-cost-btn')) {
+                const item = JSON.parse(btn.dataset.item);
+                addCostForm['cost-id'].value = item.Id;
+                addCostForm['cost-description'].value = item.descricao;
+                addCostForm['cost-category'].value = item.categoria;
+                addCostForm['cost-date'].value = item.data.split('T')[0];
+                addCostForm['cost-value'].value = item.valor;
+                saveCostBtn.textContent = 'Salvar Alterações';
+            } else if (btn.classList.contains('delete-cost-btn')) {
+                if(confirm('Tem certeza que deseja apagar este custo?')){
+                    api.deleteCusto(parseInt(btn.dataset.id)).then(loadData);
+                }
+            }
+        });
+        
+        // Relatórios
+        generateReportBtn.addEventListener('click', () => reportModal.classList.remove('hidden'));
+        cancelReport.addEventListener('click', () => reportModal.classList.add('hidden'));
+        reportForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const reportType = document.getElementById('reportType').value;
+            const startDate = document.getElementById('reportStartDate').value;
+            const endDate = document.getElementById('reportEndDate').value;
+            
+            generatePdfReport(reportType, startDate, endDate);
+            reportModal.classList.add('hidden');
+        });
+
+        function generatePdfReport(type, start, end) {
+            const doc = new jsPDF();
+            const startDate = new Date(start + 'T00:00:00');
+            const endDate = new Date(end + 'T23:59:59');
+
+            doc.setFontSize(18);
+            doc.text("Relatório Lumi Doces", 14, 22);
+            doc.setFontSize(11);
+            doc.text(`Período: ${startDate.toLocaleDateString('pt-BR')} a ${endDate.toLocaleDateString('pt-BR')}`, 14, 30);
+            
+            const salesData = allVendas.filter(v => new Date(v.data) >= startDate && new Date(v.data) <= endDate && v.status === 'completed');
+            const costsData = allCustos.filter(c => new Date(c.data) >= startDate && new Date(c.data) <= endDate);
+
+            if (type === 'vendas' || type === 'geral') {
+                const totalVendas = salesData.reduce((sum, v) => sum + v.total, 0);
+                doc.autoTable({
+                    startY: 40,
+                    head: [['Data', 'Itens', 'Pagamento', 'Total']],
+                    body: salesData.map(v => [
+                        new Date(v.data).toLocaleString('pt-BR'),
+                        v.items.map(i => `${i.quantidade}x ${i.produtoNome}`).join(', '),
+                        v.pagamentos.map(p=>p.method).join(', '),
+                        formatCurrency(v.total)
+                    ]),
+                    foot: [['Total de Vendas', '', '', formatCurrency(totalVendas)]],
+                    theme: 'grid'
+                });
+            }
+
+            if (type === 'custos' || type === 'geral') {
+                 const totalCustos = costsData.reduce((sum, c) => sum + c.valor, 0);
+                 doc.autoTable({
+                     startY: doc.previousAutoTable ? doc.previousAutoTable.finalY + 10 : 40,
+                     head: [['Data', 'Descrição', 'Categoria', 'Valor']],
+                     body: costsData.map(c => [
+                         new Date(c.data).toLocaleDateString('pt-BR', {timeZone: 'UTC'}),
+                         c.descricao,
+                         c.categoria,
+                         formatCurrency(c.valor)
+                     ]),
+                     foot: [['Total de Custos', '', '', formatCurrency(totalCustos)]],
+                     theme: 'grid'
+                 });
+            }
+
+            if(type === 'geral') {
+                const totalVendas = salesData.reduce((sum, v) => sum + v.total, 0);
+                const totalCustos = costsData.reduce((sum, c) => sum + c.valor, 0);
+                const lucro = totalVendas - totalCustos;
+                doc.setFontSize(14);
+                doc.text('Balanço Final', 14, doc.autoTable.previous.finalY + 15);
+                doc.setFontSize(11);
+                doc.text(`Receita Bruta: ${formatCurrency(totalVendas)}`, 14, doc.autoTable.previous.finalY + 22);
+                doc.text(`Total de Custos: ${formatCurrency(totalCustos)}`, 14, doc.autoTable.previous.finalY + 29);
+                doc.text(`Lucro Bruto: ${formatCurrency(lucro)}`, 14, doc.autoTable.previous.finalY + 36);
+            }
+
+
+            doc.save(`relatorio-${type}-${new Date().toISOString().split('T')[0]}.pdf`);
+        }
+
 
         applyTheme(localStorage.getItem('theme') || 'dark');
         loadData();
     </script>
 </body>
 </html>
-
