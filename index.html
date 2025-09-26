@@ -43,15 +43,15 @@
         .page-btn:hover { background-color: var(--btn-hover-bg); }
         .page-btn-active { background-color: var(--text-title); color: white; box-shadow: 0 2px 10px -2px var(--text-title); }
         .stock-status { padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
-        .stock-status-ok { background-color: #166534; color: #dcfce7; } .stock-status-low { background-color: #854d0e; color: #fef9c3; } .stock-status-out { background-color: #991b1b; color: #fee2e2; }
-        .light-theme .stock-status-ok { background-color: #dcfce7; color: #166534; } .light-theme .stock-status-low { background-color: #fef9c3; color: #854d0e; } .light-theme .stock-status-out { background-color: #fee2e2; color: #991b1b; }
+        .stock-status-ok, .payment-status-pago { background-color: #166534; color: #dcfce7; } .stock-status-low, .payment-status-pendente { background-color: #854d0e; color: #fef9c3; } .stock-status-out { background-color: #991b1b; color: #fee2e2; }
+        .light-theme .stock-status-ok, .light-theme .payment-status-pago { background-color: #dcfce7; color: #166534; } .light-theme .stock-status-low, .light-theme .payment-status-pendente { background-color: #fef9c3; color: #854d0e; } .light-theme .stock-status-out { background-color: #fee2e2; color: #991b1b; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; }
         .payment-btn-group button { border: 1px solid var(--input-border); padding: 8px 12px; transition: background-color 0.2s; }
         .payment-btn-group button.selected { background-color: var(--text-title); color: white; border-color: var(--text-title); }
         .modal-label { color: var(--text-secondary); } .light-theme .modal-label { color: var(--text-primary); }
         .chart-container { position: relative; height: 350px; width: 100%; }
         .search-results-option { background-color: var(--input-bg); } .light-theme .search-results-option { background-color: var(--bg-secondary); }
-        #salesFilterButtons button.filter-btn-active { background-color: var(--text-title); color: white; }
+        #salesFilterButtons button.filter-btn-active, #pendentesFilterButtons button.filter-btn-active { background-color: var(--text-title); color: white; }
     </style>
 </head>
 <body class="min-h-screen">
@@ -98,8 +98,8 @@
         <nav class="mb-8 p-2 glass-effect rounded-lg flex items-center justify-center sm:justify-start gap-2 flex-wrap">
             <button id="pageVendasBtn" class="page-btn page-btn-active">Vendas</button>
             <button id="pageEstoqueBtn" class="page-btn">Estoque</button>
-            <button id="pageCustosBtn" class="page-btn">Custos</button>
-            <button id="pageDashboardBtn" class="page-btn">Dashboard</button>
+            <button id="pageCustosBtn" class="page-btn hidden">Custos</button>
+            <button id="pageDashboardBtn" class="page-btn hidden">Dashboard</button>
             <button id="pageGestaoBtn" class="page-btn hidden">Gestão</button>
         </nav>
 
@@ -119,10 +119,11 @@
 
                  <!-- SEÇÃO BALANÇO -->
                  <h2 class="text-2xl font-semibold mb-4 font-orbitron">Balanço Financeiro</h2>
-                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
                      <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-gray-400">RECEITA BRUTA</h3><p id="balancoReceita" class="text-2xl font-bold"></p></div>
                      <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-gray-400">CUSTO TOTAL</h3><p id="balancoCustos" class="text-2xl font-bold"></p></div>
                      <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-green-400">LUCRO BRUTO</h3><p id="balancoLucro" class="text-2xl font-bold"></p></div>
+                     <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-yellow-400">CUSTOS PENDENTES</h3><p id="balancoPendente" class="text-2xl font-bold"></p></div>
                      <div class="glass-effect p-4 rounded-lg"><h3 class="text-sm font-semibold text-blue-400">MARGEM DE LUCRO</h3><p id="balancoMargem" class="text-2xl font-bold"></p></div>
                  </div>
                  <div class="grid grid-cols-1 gap-8 mb-8">
@@ -156,6 +157,9 @@
                  <h2 class="text-2xl font-semibold mb-4 font-orbitron mt-12">Análise de Custos</h2>
                  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Custos por Categoria</h3><div class="chart-container"><canvas id="costsByCategoryChart"></canvas></div></div>
+                    <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Custos por Status de Pagamento</h3><div class="chart-container"><canvas id="costsByPaymentStatusChart"></canvas></div></div>
+                 </div>
+                 <div class="grid grid-cols-1 gap-8 mb-8">
                     <div class="glass-effect p-6 rounded-lg"><h3 class="font-semibold mb-4 text-center">Custos por Fornecedor</h3><div class="chart-container"><canvas id="costsBySupplierChart"></canvas></div></div>
                  </div>
             </div>
@@ -190,16 +194,50 @@
                                 <div><label class="modal-label block text-sm font-medium">Categoria</label><select id="cost-category" class="custom-select mt-1"><option>Fixo</option><option>Variável</option><option>Matéria Prima</option><option>Outros</option></select></div>
                                 <div><label class="modal-label block text-sm font-medium">Fornecedor</label><select id="cost-supplier" class="custom-select mt-1"><option value="">Nenhum</option></select></div>
                                 <div><label class="modal-label block text-sm font-medium">Data</label><input type="date" id="cost-date" required class="custom-input mt-1"></div>
-                                <div><label class="modal-label block text-sm font-medium">Valor</label><input type="number" id="cost-value" step="0.01" min="0" required class="custom-input mt-1"></div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="modal-label block text-sm font-medium">Valor</label><input type="number" id="cost-value" step="0.01" min="0" required class="custom-input mt-1"></div>
+                                    <div><label class="modal-label block text-sm font-medium">Status Pagamento</label><select id="cost-status" class="custom-select mt-1"><option>Pago</option><option>Pendente</option></select></div>
+                                </div>
                                 <div class="pt-2"><button type="submit" id="saveCostBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-sm text-white bg-blue-600 hover:bg-blue-700">Adicionar Custo</button></div>
                             </form>
                         </div>
                     </div>
-                    <div class="lg:col-span-2">
+                    <div class="lg:col-span-2 space-y-8">
                         <div class="glass-effect p-4 sm:p-6 rounded-lg">
                             <h2 class="text-xl font-semibold font-orbitron mb-5">Histórico de Custos</h2>
-                            <div class="overflow-x-auto"><table class="min-w-full"><thead class="border-b" style="border-color: var(--border-color);"><tr><th class="px-4 py-3 text-left text-xs font-medium uppercase">Data</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Descrição</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Fornecedor</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Valor</th><th class="px-4 py-3 text-center text-xs font-medium uppercase">Ações</th></tr></thead><tbody id="costsList"></tbody></table></div>
+                             <div class="flex flex-col sm:flex-row gap-4 mb-5 flex-wrap">
+                                <div class="flex items-center gap-2 flex-grow"><label for="filterCustoStartDate" class="text-sm flex-shrink-0">De:</label><input type="date" id="filterCustoStartDate" class="custom-input"></div>
+                                <div class="flex items-center gap-2 flex-grow"><label for="filterCustoEndDate" class="text-sm flex-shrink-0">Até:</label><input type="date" id="filterCustoEndDate" class="custom-input"></div>
+                                <div class="flex-grow"><select id="filterCustoFornecedor" class="custom-select w-full"><option value="todos">Todos Fornecedores</option></select></div>
+                                <div class="flex-grow"><select id="filterCustoStatus" class="custom-select w-full"><option value="todos">Todos Status</option><option>Pago</option><option>Pendente</option></select></div>
+                            </div>
+                            <div class="overflow-x-auto"><table class="min-w-full"><thead class="border-b" style="border-color: var(--border-color);"><tr><th class="px-4 py-3 text-left text-xs font-medium uppercase">Data</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Descrição</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Fornecedor</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Valor</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th><th class="px-4 py-3 text-center text-xs font-medium uppercase">Ações</th></tr></thead><tbody id="costsList"></tbody></table></div>
                         </div>
+
+                        <div class="glass-effect p-4 sm:p-6 rounded-lg">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold font-orbitron">Pagamentos Pendentes</h2>
+                                <div id="pendentesFilterButtons" class="flex items-center gap-2 rounded-md p-1" style="background-color: var(--btn-bg);">
+                                    <button data-period="all" class="px-3 py-1 text-sm rounded-md filter-btn-active">Todos</button>
+                                    <button data-period="week" class="px-3 py-1 text-sm rounded-md">Semana</button>
+                                    <button data-period="month" class="px-3 py-1 text-sm rounded-md">Mês</button>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full">
+                                    <thead class="border-b" style="border-color: var(--border-color);">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-xs font-medium uppercase">Data</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium uppercase">Descrição</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium uppercase">Fornecedor</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium uppercase">Valor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pendentesList"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -270,7 +308,7 @@
     <div id="reportModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-lg"><h2 class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);">Gerar Relatório</h2><form id="reportForm" class="space-y-4"><div><label class="modal-label block text-sm font-medium">Tipo de Relatório</label><select id="reportType" class="custom-select mt-1"><option value="geral">Geral (Balanço)</option><option value="vendas">Vendas</option><option value="custos">Custos</option></select></div><div class="grid grid-cols-2 gap-4"><div><label class="modal-label block text-sm font-medium">Data Inicial</label><input type="date" id="reportStartDate" class="custom-input mt-1" required></div><div><label class="modal-label block text-sm font-medium">Data Final</label><input type="date" id="reportEndDate" class="custom-input mt-1" required></div></div><div class="flex gap-4 pt-4"><button type="button" id="cancelReport" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700">Gerar PDF</button></div></form></div></div>
     <div id="logoutModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md text-center"><h2 class="text-2xl font-semibold mb-5 font-orbitron">Sair do Sistema</h2><p class="mb-6">Tem certeza de que deseja sair?</p><div class="flex gap-4 pt-4"><button type="button" id="cancelLogout" class="w-full justify-center py-2 px-4 border rounded-md shadow-sm text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="button" id="confirmLogout" class="w-full justify-center py-2 px-4 border-transparent rounded-md shadow-sm text-sm text-white bg-red-600 hover:bg-red-700">Sair</button></div></div></div>
     <div id="fornecedorModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md"><h2 id="fornecedorModalTitle" class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);"></h2><form id="fornecedorForm" class="space-y-4"><input type="hidden" id="fornecedor-id"><div><label class="modal-label block text-sm font-medium">Nome do Fornecedor</label><input type="text" id="fornecedor-nome" required class="custom-input mt-1"></div><div><label class="modal-label block text-sm font-medium">Contato (Nome)</label><input type="text" id="fornecedor-contato" class="custom-input mt-1"></div><div><label class="modal-label block text-sm font-medium">Telefone (com DDD)</label><input type="tel" id="fornecedor-telefone" required class="custom-input mt-1" placeholder="11987654321"></div><div><label class="modal-label block text-sm font-medium">Categoria</label><input type="text" id="fornecedor-categoria" class="custom-input mt-1"></div><div class="flex gap-4 pt-4"><button type="button" id="cancelFornecedor" class="w-full justify-center py-2 px-4 border rounded-md shadow-sm text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md shadow-sm text-sm text-white bg-blue-600 hover:bg-blue-700">Salvar</button></div></form></div></div>
-    <div id="funcionarioModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md"><h2 id="funcionarioModalTitle" class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);"></h2><form id="funcionarioForm" class="space-y-4"><input type="hidden" id="funcionario-id"><div><label class="modal-label block text-sm font-medium">Nome do Funcionário</label><input type="text" id="funcionario-nome" required class="custom-input mt-1"></div><div><label class="modal-label block text-sm font-medium">Cargo</label><select id="funcionario-cargo" class="custom-select mt-1"><option>Vendedor(a)</option><option>Gerente</option></select></div><div><label class="modal-label block text-sm font-medium">Telefone (com DDD)</label><input type="tel" id="funcionario-telefone" class="custom-input mt-1" placeholder="83987654321"></div><div class="grid grid-cols-2 gap-4"><div><label class="modal-label block text-sm font-medium">Login</label><input type="text" id="funcionario-login" required class="custom-input mt-1"></div><div><label class="modal-label block text-sm font-medium">Senha</label><input type="password" id="funcionario-senha" required class="custom-input mt-1"></div></div><div class="flex gap-4 pt-4"><button type="button" id="cancelFuncionario" class="w-full justify-center py-2 px-4 border rounded-md shadow-sm text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md shadow-sm text-sm text-white bg-blue-600 hover:bg-blue-700">Salvar</button></div></form></div></div>
+    <div id="funcionarioModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md"><h2 id="funcionarioModalTitle" class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);"></h2><form id="funcionarioForm" class="space-y-4"><input type="hidden" id="funcionario-id"><div><label class="modal-label block text-sm font-medium">Nome do Funcionário</label><input type="text" id="funcionario-nome" required class="custom-input mt-1"></div><div><label class="modal-label block text-sm font-medium">Cargo</label><select id="funcionario-cargo" class="custom-select mt-1"><option>Vendedor(a)</option><option>Gerente</option></select></div><div><label class="modal-label block text-sm font-medium">Telefone (com DDD)</label><input type="tel" id="funcionario-telefone" class="custom-input mt-1" placeholder="83987654321"></div><div class="grid grid-cols-2 gap-4"><div><label class="modal-label block text-sm font-medium">Login</label><input type="text" id="funcionario-login" required class="custom-input mt-1"></div><div><label class="modal-label block text-sm font-medium">Senha</label><input type="password" id="funcionario-senha" required class="custom-input mt-1"></div></div><div class="flex items-center"><input id="funcionario-admin" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 bg-transparent"><label for="funcionario-admin" class="ml-2 block text-sm text-gray-400">Administrador</label></div><div class="flex gap-4 pt-4"><button type="button" id="cancelFuncionario" class="w-full justify-center py-2 px-4 border rounded-md shadow-sm text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md shadow-sm text-sm text-white bg-blue-600 hover:bg-blue-700">Salvar</button></div></form></div></div>
     
     <script type="module">
         const { jsPDF } = window.jspdf;
@@ -278,8 +316,8 @@
         let mockProdutos = [ { Id: 1, nome: 'Brigadeiro Gourmet', categoria: 'Doces', marca: 'Lumi', unidade: 'Unidade', preco: 4.50, estoque: 50, estoqueMinimo: 10 }, { Id: 2, nome: 'Caixa de Bombom', categoria: 'Chocolates', marca: 'Nestlé', unidade: 'Caixa', preco: 25.00, estoque: 8, estoqueMinimo: 5 }, { Id: 3, nome: 'Bala de Goma (100g)', categoria: 'Balas', marca: 'Fini', unidade: 'Pacote', preco: 6.00, estoque: 80, estoqueMinimo: 20 }, { Id: 4, nome: 'Pirulito Colorido', categoria: 'Balas', marca: 'Lumi', unidade: 'Unidade', preco: 1.50, estoque: 120, estoqueMinimo: 50 }, { Id: 5, nome: 'Barra de Chocolate Amargo', categoria: 'Chocolates', marca: 'Cacau Show', unidade: 'Unidade', preco: 12.00, estoque: 0, estoqueMinimo: 10 }, { Id: 6, nome: 'Paçoca', categoria: 'Doces', marca: 'Santa Helena', unidade: 'Unidade', preco: 2.00, estoque: 45, estoqueMinimo: 15 }, ];
         let mockVendas = [ { Id: 101, items: [{produtoId: 3, produtoNome: "Bala de Goma (100g)", quantidade: 2, precoUnitario: 6.00}], total: 12.00, pagamentos: [{method: 'Débito', amount: 12.00}], data: '2025-07-23T10:00:00Z', edited: false, status: 'completed' }, { Id: 102, items: [{produtoId: 1, produtoNome: "Brigadeiro Gourmet", quantidade: 5, precoUnitario: 4.50}], total: 22.50, pagamentos: [{method: 'Pix', amount: 22.50}], data: '2025-08-15T14:30:00Z', edited: false, status: 'completed' }, { Id: 103, items: [{produtoId: 2, produtoNome: "Caixa de Bombom", quantidade: 1, precoUnitario: 25.00}, {produtoId: 4, produtoNome: "Pirulito Colorido", quantidade: 10, precoUnitario: 1.50}], total: 40.00, pagamentos: [{method: 'Crédito', amount: 40.00}], data: '2025-09-24T18:00:00Z', edited: false, status: 'completed' }, ];
         let mockFornecedores = [ { Id: 1, nome: "Doce Sabor Atacado", contato: "Carlos", telefone: "11987654321", categoria: "Matéria Prima" }, { Id: 2, nome: "EmbalaTudo Embalagens", contato: "Fernanda", telefone: "21912345678", categoria: "Embalagens" } ];
-        let mockFuncionarios = [ { Id: 1, nome: "Admin", cargo: "Gerente", telefone: "83999998888", login: "admin", senha: "lumi10" }, { Id: 2, nome: "Joana Silva", cargo: "Vendedor(a)", telefone: "83988887777", login: "joana", senha: "123" } ];
-        let mockCustos = [ {Id: 1, descricao: "Aluguel Loja", categoria: "Fixo", data: "2025-09-05T00:00:00Z", valor: 1500.00, fornecedorId: null}, {Id: 2, descricao: "Compra de Chocolate", categoria: "Matéria Prima", data: "2025-09-10T00:00:00Z", valor: 350.75, fornecedorId: 1}, {Id: 3, descricao: "Conta de Energia", categoria: "Variável", data: "2025-09-20T00:00:00Z", valor: 280.50, fornecedorId: null} ];
+        let mockFuncionarios = [ { Id: 1, nome: "Admin", cargo: "Gerente", telefone: "83999998888", login: "admin", senha: "lumi10", isAdmin: true }, { Id: 2, nome: "Joana Silva", cargo: "Vendedor(a)", telefone: "83988887777", login: "joana", senha: "123", isAdmin: false } ];
+        let mockCustos = [ {Id: 1, descricao: "Aluguel Loja", categoria: "Fixo", data: "2025-09-05T00:00:00Z", valor: 1500.00, fornecedorId: null, status: 'Pago'}, {Id: 2, descricao: "Compra de Chocolate", categoria: "Matéria Prima", data: "2025-09-10T00:00:00Z", valor: 350.75, fornecedorId: 1, status: 'Pago'}, {Id: 3, descricao: "Conta de Energia", categoria: "Variável", data: "2025-09-20T00:00:00Z", valor: 280.50, fornecedorId: null, status: 'Pendente'} ];
         let nextProductId = 7, nextVendaId = 104, nextCustoId = 4, nextFornecedorId = 3, nextFuncionarioId = 3;
         
         // --- API SIMULADA ---
@@ -330,6 +368,8 @@
         const fornecedorModal = document.getElementById('fornecedorModal'), fornecedorForm = document.getElementById('fornecedorForm'), cancelFornecedor = document.getElementById('cancelFornecedor'), addFornecedorBtn = document.getElementById('addFornecedorBtn');
         const funcionarioModal = document.getElementById('funcionarioModal'), funcionarioForm = document.getElementById('funcionarioForm'), cancelFuncionario = document.getElementById('cancelFuncionario'), addFuncionarioBtn = document.getElementById('addFuncionarioBtn');
         const currentUserDisplay = document.getElementById('currentUserDisplay');
+        const filterCustoStartDate = document.getElementById('filterCustoStartDate'), filterCustoEndDate = document.getElementById('filterCustoEndDate'), filterCustoFornecedor = document.getElementById('filterCustoFornecedor'), filterCustoStatus = document.getElementById('filterCustoStatus');
+        const pendentesList = document.getElementById('pendentesList'), pendentesFilterButtons = document.getElementById('pendentesFilterButtons');
 
         // --- FUNÇÕES UTILITÁRIAS ---
         const formatCurrency = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
@@ -346,18 +386,48 @@
         const renderCustosView = (custos) => {
             costsList.innerHTML = custos.length ? custos.sort((a,b) => new Date(b.data) - new Date(a.data)).map(c => {
                 const fornecedor = allFornecedores.find(f => f.Id === c.fornecedorId);
+                const statusClass = c.status === 'Pago' ? 'payment-status-pago' : 'payment-status-pendente';
+                const statusText = c.status || 'N/A';
                 return `
                 <tr class="border-b" style="border-color: var(--border-color);">
                     <td class="px-4 py-3 text-sm">${new Date(c.data).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</td>
                     <td class="px-4 py-3 text-sm text-gray-400">${c.descricao}</td>
                     <td class="px-4 py-3 text-sm text-gray-400">${fornecedor ? fornecedor.nome : 'N/A'}</td>
                     <td class="px-4 py-3 text-sm text-gray-400">${formatCurrency(c.valor)}</td>
+                    <td class="px-4 py-3 text-sm"><span class="stock-status ${statusClass}">${statusText}</span></td>
                     <td class="px-4 py-3 text-center"><div class="flex items-center justify-center gap-1">
                         <button class="action-btn edit-cost-btn" data-item='${JSON.stringify(c)}' title="Editar Custo"><svg class="pointer-events-none text-blue-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V12h2.293z"/></svg></button>
                         <button class="action-btn delete-cost-btn" data-id="${c.Id}" title="Apagar Custo"><svg class="pointer-events-none text-red-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/></svg></button>
                     </div></td>
                 </tr>
-            `}).join('') : `<tr><td colspan="5" class="p-4 text-center">Nenhum custo encontrado.</td></tr>`;
+            `}).join('') : `<tr><td colspan="6" class="p-4 text-center">Nenhum custo encontrado.</td></tr>`;
+        };
+        
+        const renderPendentesView = (period = 'all') => {
+            let pendentes = allCustos.filter(c => c.status === 'Pendente');
+            
+            if (period !== 'all') {
+                const endDate = new Date();
+                let startDate = new Date();
+                if(period === 'week') startDate.setDate(endDate.getDate() - 7);
+                if(period === 'month') startDate.setMonth(endDate.getMonth() - 1);
+                
+                pendentes = pendentes.filter(c => {
+                    const costDate = new Date(c.data);
+                    return costDate >= startDate && costDate <= endDate;
+                });
+            }
+
+            pendentesList.innerHTML = pendentes.length ? pendentes.sort((a,b) => new Date(a.data) - new Date(b.data)).map(c => {
+                const fornecedor = allFornecedores.find(f => f.Id === c.fornecedorId);
+                return `
+                <tr class="border-b" style="border-color: var(--border-color);">
+                    <td class="px-4 py-3 text-sm">${new Date(c.data).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</td>
+                    <td class="px-4 py-3 text-sm text-gray-400">${c.descricao}</td>
+                    <td class="px-4 py-3 text-sm text-gray-400">${fornecedor ? fornecedor.nome : 'N/A'}</td>
+                    <td class="px-4 py-3 text-sm text-gray-400">${formatCurrency(c.valor)}</td>
+                </tr>
+            `}).join('') : `<tr><td colspan="4" class="p-4 text-center">Nenhum pagamento pendente.</td></tr>`;
         };
 
         const renderVendasView = (vendas) => {
@@ -401,11 +471,13 @@
             const custoTotal = custosData.reduce((s, c) => s + c.valor, 0);
             const lucroBruto = receitaBruta - custoTotal;
             const margemLucro = receitaBruta > 0 ? (lucroBruto / receitaBruta) * 100 : 0;
+            const custosPendentes = custosData.filter(c => c.status === 'Pendente').reduce((s, c) => s + c.valor, 0);
             document.getElementById('balancoReceita').textContent = formatCurrency(receitaBruta);
             document.getElementById('balancoCustos').textContent = formatCurrency(custoTotal);
             document.getElementById('balancoLucro').textContent = formatCurrency(lucroBruto);
             document.getElementById('balancoMargem').textContent = `${margemLucro.toFixed(2)}%`;
-            
+            document.getElementById('balancoPendente').textContent = formatCurrency(custosPendentes);
+
             // Vendas
             document.getElementById('metricTotalSales').textContent = completedVendas.length;
             document.getElementById('metricItemsSold').textContent = completedVendas.reduce((s, v) => s + v.items.reduce((si, i) => si + i.quantidade, 0), 0);
@@ -445,6 +517,9 @@
                 return acc;
             }, {});
             renderChart('costsBySupplierChart', 'bar', { labels: Object.keys(costsBySupplier), datasets: [{ label: 'Total Gasto', data: Object.values(costsBySupplier), backgroundColor: '#f59e0b', borderRadius: 4 }] }, { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => formatCurrency(ctx.raw) } } }, scales: { x: { ticks: { color: Chart.defaults.color, callback: (v) => formatCurrency(v) }, grid: { color: Chart.defaults.borderColor } }, y: { ticks: { color: Chart.defaults.color }, grid: { display: false } } } });
+
+            const costsByPaymentStatus = custosData.reduce((acc, c) => { const status = c.status || 'Não definido'; acc[status] = (acc[status] || 0) + c.valor; return acc; }, {});
+            renderChart('costsByPaymentStatusChart', 'doughnut', { labels: Object.keys(costsByPaymentStatus), datasets: [{ data: Object.values(costsByPaymentStatus), backgroundColor: ['#10b981', '#f59e0b'], borderWidth: 0, hoverOffset: 8 }] }, { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: Chart.defaults.color } }, tooltip: { callbacks: { label: (c) => `${c.label}: ${formatCurrency(c.raw)}` } } } });
         };
         
         const applyFiltersAndRender = () => {
@@ -458,7 +533,13 @@
             if (filterStartDate.value) filteredVendas = filteredVendas.filter(v => new Date(v.data) >= new Date(filterStartDate.value + 'T00:00:00'));
             if (filterEndDate.value) filteredVendas = filteredVendas.filter(v => new Date(v.data) <= new Date(filterEndDate.value + 'T23:59:59'));
             renderVendasView(filteredVendas);
-            renderCustosView(allCustos);
+
+            let filteredCustos = [...allCustos];
+            if (filterCustoStartDate.value) filteredCustos = filteredCustos.filter(c => new Date(c.data) >= new Date(filterCustoStartDate.value + 'T00:00:00'));
+            if (filterCustoEndDate.value) filteredCustos = filteredCustos.filter(c => new Date(c.data) <= new Date(filterCustoEndDate.value + 'T23:59:59'));
+            if (filterCustoFornecedor.value !== 'todos') filteredCustos = filteredCustos.filter(c => c.fornecedorId == filterCustoFornecedor.value);
+            if (filterCustoStatus.value !== 'todos') filteredCustos = filteredCustos.filter(c => c.status === filterCustoStatus.value);
+            renderCustosView(filteredCustos);
             
             let dashboardVendas = allVendas;
             let dashboardCustos = allCustos;
@@ -471,6 +552,7 @@
                 dashboardCustos = dashboardCustos.filter(c => new Date(c.data) <= new Date(dashboardFilterEndDate.value + 'T23:59:59'));
             }
             renderDashboard(dashboardVendas, allProdutos, dashboardCustos);
+            renderPendentesView();
         };
         
         const populateFiltersAndForms = () => {
@@ -478,7 +560,10 @@
             filterCategoria.innerHTML = '<option value="todos">Todas Categorias</option>' + categorias.map(c => `<option value="${c}">${c}</option>`).join('');
             
             const costSupplierSelect = document.getElementById('cost-supplier');
-            costSupplierSelect.innerHTML = '<option value="">Nenhum</option>' + allFornecedores.map(f => `<option value="${f.Id}">${f.nome}</option>`).join('');
+            const filterCostSupplierSelect = document.getElementById('filterCustoFornecedor');
+            const supplierOptions = allFornecedores.map(f => `<option value="${f.Id}">${f.nome}</option>`).join('');
+            costSupplierSelect.innerHTML = '<option value="">Nenhum</option>' + supplierOptions;
+            filterCostSupplierSelect.innerHTML = '<option value="todos">Todos Fornecedores</option>' + supplierOptions;
         };
         
         const loadData = async () => { try { const [prods, vendas, custos, fornecedores, funcionarios] = await Promise.all([api.getProdutos(), api.getVendas(), api.getCustos(), api.getFornecedores(), api.getFuncionarios()]); allProdutos = prods.list || []; allVendas = vendas.list || []; allCustos = custos.list || []; allFornecedores = fornecedores.list || []; allFuncionarios = funcionarios.list || []; populateFiltersAndForms(); applyFiltersAndRender(); renderGestaoView(); } catch (error) { console.error("Erro ao carregar dados:", error); } };
@@ -584,10 +669,10 @@
             document.getElementById('payment-amount').value = (remaining > 0 ? remaining : 0).toFixed(2);
 
             const changeEl = document.getElementById('paymentChange');
-            const isCashOnly = currentPayments.every(p => p.method === 'Dinheiro');
+            const hasCashPayment = currentPayments.some(p => p.method === 'Dinheiro');
             const change = remaining < 0 ? -remaining : 0;
             
-            if (isCashOnly && change > 0) {
+            if (hasCashPayment && change > 0) {
                 changeEl.textContent = formatCurrency(change);
                 changeEl.parentElement.classList.remove('hidden');
             } else {
@@ -746,6 +831,14 @@
             dashboardFilterEndDate.value = endDate.toISOString().split('T')[0];
             applyFiltersAndRender();
         });
+        
+        pendentesFilterButtons.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if(!btn) return;
+             document.querySelectorAll('#pendentesFilterButtons button').forEach(b => b.classList.remove('filter-btn-active'));
+            btn.classList.add('filter-btn-active');
+            renderPendentesView(btn.dataset.period);
+        });
 
         vendasList.addEventListener('click', (e) => {
             const btn = e.target.closest('button');
@@ -841,7 +934,7 @@
         cancelCancellation.addEventListener('click', () => confirmCancelModal.classList.add('hidden'));
 
         [pageDashboardBtn, pageEstoqueBtn, pageVendasBtn, pageCustosBtn, pageGestaoBtn].forEach(btn => btn.addEventListener('click', () => switchPage(btn.id.replace('page', '').replace('Btn', ''))));
-        [filterCategoria, filterStatusEstoque, searchProdutoInput, filterStartDate, filterEndDate, dashboardFilterStartDate, dashboardFilterEndDate].forEach(el => el.addEventListener('input', applyFiltersAndRender));
+        [filterCategoria, filterStatusEstoque, searchProdutoInput, filterStartDate, filterEndDate, dashboardFilterStartDate, dashboardFilterEndDate, filterCustoStartDate, filterCustoEndDate, filterCustoFornecedor, filterCustoStatus].forEach(el => el.addEventListener('input', applyFiltersAndRender));
         cancelEdit.addEventListener('click', () => addEditModal.classList.add('hidden')); cancelDelete.addEventListener('click', () => deleteModal.classList.add('hidden')); cancelRestock.addEventListener('click', () => { restockModal.classList.add('hidden'); restockForm.reset(); });
         closeShoppingListModal.addEventListener('click', () => shoppingListModal.classList.add('hidden'));
         closeSaleDetailsModal.addEventListener('click', () => saleDetailsModal.classList.add('hidden'));
@@ -865,10 +958,16 @@
             if (foundUser) {
                 currentUser = foundUser;
                 currentUserDisplay.textContent = `Olá, ${currentUser.nome}`;
-                if (currentUser.cargo === 'Gerente') {
+
+                // Libera a tela de Custos para todos os usuários logados
+                pageCustosBtn.classList.remove('hidden');
+
+                if (currentUser.isAdmin) {
                     pageGestaoBtn.classList.remove('hidden');
+                    pageDashboardBtn.classList.remove('hidden');
                 } else {
                     pageGestaoBtn.classList.add('hidden');
+                    pageDashboardBtn.classList.add('hidden');
                 }
                 loginPage.classList.add('hidden');
                 appWrapper.classList.remove('hidden');
@@ -897,7 +996,8 @@
                 categoria: addCostForm['cost-category'].value,
                 data: addCostForm['cost-date'].value,
                 valor: parseFloat(addCostForm['cost-value'].value),
-                fornecedorId: addCostForm['cost-supplier'].value ? parseInt(addCostForm['cost-supplier'].value) : null
+                fornecedorId: addCostForm['cost-supplier'].value ? parseInt(addCostForm['cost-supplier'].value) : null,
+                status: addCostForm['cost-status'].value
             };
             if(id) {
                 await api.patchCusto(id, data);
@@ -922,6 +1022,7 @@
                 addCostForm['cost-date'].value = item.data.split('T')[0];
                 addCostForm['cost-value'].value = item.valor;
                 addCostForm['cost-supplier'].value = item.fornecedorId || '';
+                addCostForm['cost-status'].value = item.status || 'Pago';
                 saveCostBtn.textContent = 'Salvar Alterações';
             } else if (btn.classList.contains('delete-cost-btn')) {
                 deleteModal.querySelector('p').textContent = 'Tem certeza de que deseja apagar este custo? Esta ação não pode ser desfeita.';
@@ -959,10 +1060,81 @@
         addFuncionarioBtn.addEventListener('click', () => { document.getElementById('funcionarioModalTitle').textContent = "Adicionar Funcionário"; funcionarioForm.reset(); funcionarioForm['funcionario-id'].value = ''; funcionarioModal.classList.remove('hidden'); });
         cancelFornecedor.addEventListener('click', () => fornecedorModal.classList.add('hidden'));
         cancelFuncionario.addEventListener('click', () => funcionarioModal.classList.add('hidden'));
+
+        fornecedorForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = fornecedorForm['fornecedor-id'].value ? parseInt(fornecedorForm['fornecedor-id'].value) : null;
+            const data = {
+                nome: fornecedorForm['fornecedor-nome'].value,
+                contato: fornecedorForm['fornecedor-contato'].value,
+                telefone: fornecedorForm['fornecedor-telefone'].value,
+                categoria: fornecedorForm['fornecedor-categoria'].value,
+            };
+            try {
+                await (id ? api.patchFornecedor(id, data) : api.postFornecedor(data));
+                fornecedorModal.classList.add('hidden');
+                await loadData();
+            } catch (error) { console.error('Erro ao salvar fornecedor:', error); }
+        });
+
+        funcionarioForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = funcionarioForm['funcionario-id'].value ? parseInt(funcionarioForm['funcionario-id'].value) : null;
+            const data = {
+                nome: funcionarioForm['funcionario-nome'].value,
+                cargo: funcionarioForm['funcionario-cargo'].value,
+                telefone: funcionarioForm['funcionario-telefone'].value,
+                login: funcionarioForm['funcionario-login'].value,
+                senha: funcionarioForm['funcionario-senha'].value,
+                isAdmin: funcionarioForm['funcionario-admin'].checked
+            };
+            try {
+                await (id ? api.patchFuncionario(id, data) : api.postFuncionario(data));
+                funcionarioModal.classList.add('hidden');
+                await loadData();
+            } catch (error) { console.error('Erro ao salvar funcionário:', error); }
+        });
+
         fornecedoresList.addEventListener('click', (e) => {
             const btn = e.target.closest('button'); if(!btn) return;
-            if(btn.classList.contains('edit-fornecedor-btn')) { /* ... */ }
-            if(btn.classList.contains('delete-fornecedor-btn')) { /* ... */ }
+            if(btn.classList.contains('edit-fornecedor-btn')) {
+                const item = JSON.parse(btn.dataset.item);
+                document.getElementById('fornecedorModalTitle').textContent = "Editar Fornecedor";
+                fornecedorForm['fornecedor-id'].value = item.Id;
+                fornecedorForm['fornecedor-nome'].value = item.nome;
+                fornecedorForm['fornecedor-contato'].value = item.contato;
+                fornecedorForm['fornecedor-telefone'].value = item.telefone;
+                fornecedorForm['fornecedor-categoria'].value = item.categoria;
+                fornecedorModal.classList.remove('hidden');
+            }
+            if(btn.classList.contains('delete-fornecedor-btn')) {
+                deleteModal.querySelector('p').textContent = 'Tem certeza que deseja apagar este fornecedor?';
+                confirmDelete.dataset.id = btn.dataset.id;
+                confirmDelete.dataset.type = 'fornecedor';
+                deleteModal.classList.remove('hidden');
+            }
+        });
+
+         funcionariosList.addEventListener('click', (e) => {
+            const btn = e.target.closest('button'); if(!btn) return;
+            if(btn.classList.contains('edit-funcionario-btn')) {
+                const item = JSON.parse(btn.dataset.item);
+                document.getElementById('funcionarioModalTitle').textContent = "Editar Funcionário";
+                funcionarioForm['funcionario-id'].value = item.Id;
+                funcionarioForm['funcionario-nome'].value = item.nome;
+                funcionarioForm['funcionario-cargo'].value = item.cargo;
+                funcionarioForm['funcionario-telefone'].value = item.telefone;
+                funcionarioForm['funcionario-login'].value = item.login;
+                funcionarioForm['funcionario-senha'].value = item.senha;
+                funcionarioForm['funcionario-admin'].checked = item.isAdmin || false;
+                funcionarioModal.classList.remove('hidden');
+            }
+            if(btn.classList.contains('delete-funcionario-btn')) {
+                deleteModal.querySelector('p').textContent = 'Tem certeza que deseja apagar este funcionário?';
+                confirmDelete.dataset.id = btn.dataset.id;
+                confirmDelete.dataset.type = 'funcionario';
+                deleteModal.classList.remove('hidden');
+            }
         });
         
         // Relatórios
