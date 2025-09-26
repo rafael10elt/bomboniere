@@ -18,7 +18,6 @@
             --border-color: rgba(255, 255, 255, 0.1); --input-bg: #1e293b; --input-border: #334155;
             --btn-bg: #1e293b; --btn-border: #334155; --btn-hover-bg: #334155;
             --accent-orange: #ff6b35; --electric-blue: #00d4ff; --dark-overlay: rgba(10, 25, 47, 0.9);
-            
         }
         .light-theme {
             --bg-primary: #f1f5f9; --bg-secondary: #ffffff; --glass-bg: rgba(255, 255, 255, 0.7);
@@ -60,7 +59,7 @@
         <div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-sm">
             <div class="flex items-center justify-center gap-4 mb-8">
                 <div class="logo-symbol">
-                    <img src="LogoLumi.png" alt="Logo Lumitech" style="width: 38px; height: 38px; object-fit: contain; position: absolute; left: 6px; top: 6px; z-index: 2; pointer-events: none;" />
+                    <img src="https://i.imgur.com/J3cANt2.png" alt="Logo Lumi" style="width: 38px; height: 38px; object-fit: contain; position: absolute; left: 6px; top: 6px; z-index: 2; pointer-events: none;" />
                 </div>
                 <h1 class="text-3xl font-bold font-orbitron glow-text">Lumi Doces</h1>
             </div>
@@ -71,7 +70,7 @@
                 </div>
                 <div>
                     <label for="password" class="modal-label block text-sm font-medium">Senha</label>
-                    <input type="password" id="password" class="custom-input mt-1" placeholder="••••••••" value="Lumi10">
+                    <input type="password" id="password" class="custom-input mt-1" placeholder="••••••••" value="lumi10">
                 </div>
                 <button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700">Entrar</button>
             </form>
@@ -81,7 +80,7 @@
     <div id="app-wrapper" class="hidden container mx-auto px-4 sm:px-6 lg:px-8 max-w-full">
         <header class="flex items-center justify-between gap-4 mb-6 pt-4 sm:pt-6">
             <div class="flex items-center gap-4">
-                <div class="logo-symbol"><img src="LogoLumi.png" alt="Logo Lumitech" style="width: 38px; height: 38px; object-fit: contain; position: absolute; left: 6px; top: 6px; z-index: 2; pointer-events: none;" /></div>
+                <div class="logo-symbol"><img src="https://i.imgur.com/J3cANt2.png" alt="Logo Lumi" style="width: 38px; height: 38px; object-fit: contain; position: absolute; left: 6px; top: 6px; z-index: 2; pointer-events: none;" /></div>
                 <h1 class="text-3xl sm:text-4xl font-bold font-orbitron glow-text">Lumi Doces</h1>
             </div>
             <div class="flex items-center gap-4">
@@ -199,6 +198,11 @@
                                     <div><label class="modal-label block text-sm font-medium">Valor</label><input type="number" id="cost-value" step="0.01" min="0" required class="custom-input mt-1"></div>
                                     <div><label class="modal-label block text-sm font-medium">Status Pagamento</label><select id="cost-status" class="custom-select mt-1"><option>Pago</option><option>Pendente</option></select></div>
                                 </div>
+                                <div>
+                                    <label class="modal-label block text-sm font-medium">Comprovante</label>
+                                    <input type="file" id="cost-receipt" class="custom-input mt-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-200 dark:hover:file:bg-blue-800">
+                                    <p id="current-receipt" class="text-xs text-gray-400 mt-1"></p>
+                                </div>
                                 <div class="pt-2"><button type="submit" id="saveCostBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-sm text-white bg-blue-600 hover:bg-blue-700">Adicionar Custo</button></div>
                             </form>
                         </div>
@@ -212,7 +216,7 @@
                                 <div class="flex-grow"><select id="filterCustoFornecedor" class="custom-select w-full"><option value="todos">Todos Fornecedores</option></select></div>
                                 <div class="flex-grow"><select id="filterCustoStatus" class="custom-select w-full"><option value="todos">Todos Status</option><option>Pago</option><option>Pendente</option></select></div>
                             </div>
-                            <div class="overflow-x-auto"><table class="min-w-full"><thead class="border-b" style="border-color: var(--border-color);"><tr><th class="px-4 py-3 text-left text-xs font-medium uppercase">Data</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Descrição</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Fornecedor</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Valor</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th><th class="px-4 py-3 text-center text-xs font-medium uppercase">Ações</th></tr></thead><tbody id="costsList"></tbody></table></div>
+                            <div class="overflow-x-auto"><table class="min-w-full"><thead class="border-b" style="border-color: var(--border-color);"><tr><th class="px-4 py-3 text-left text-xs font-medium uppercase">Data</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Descrição</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Valor</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Status</th><th class="px-4 py-3 text-left text-xs font-medium uppercase">Comprovante</th><th class="px-4 py-3 text-center text-xs font-medium uppercase">Ações</th></tr></thead><tbody id="costsList"></tbody></table></div>
                         </div>
 
                         <div class="glass-effect p-4 sm:p-6 rounded-lg">
@@ -232,6 +236,7 @@
                                             <th class="px-4 py-3 text-left text-xs font-medium uppercase">Descrição</th>
                                             <th class="px-4 py-3 text-left text-xs font-medium uppercase">Fornecedor</th>
                                             <th class="px-4 py-3 text-left text-xs font-medium uppercase">Valor</th>
+                                            <th class="px-4 py-3 text-center text-xs font-medium uppercase">Ações</th>
                                         </tr>
                                     </thead>
                                     <tbody id="pendentesList"></tbody>
@@ -303,22 +308,23 @@
     <div id="restockModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-sm"><h2 class="text-2xl font-semibold mb-2 font-orbitron" style="color: var(--text-title);">Repor Estoque</h2><p id="restockProductName" class="mb-4 text-gray-400"></p><form id="restockForm"><input type="hidden" id="restock-id"><label class="modal-label block text-sm font-medium">Quantidade a adicionar</label><input type="number" id="restock-quantity" min="1" required class="custom-input mt-1"><div class="flex gap-4 pt-4"><button type="button" id="cancelRestock" class="w-full justify-center py-2 px-4 border rounded-md text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-sm text-white bg-blue-600 hover:bg-blue-700">Confirmar</button></div></form></div></div>
     <div id="shoppingListModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-2xl flex flex-col h-full max-h-[90vh]"><h2 class="text-2xl font-semibold mb-4 font-orbitron text-center" style="color: var(--text-title);">Preparar Lista de Compras</h2><div class="flex-grow overflow-y-auto pr-2"><ul id="editableShoppingList" class="space-y-2"></ul></div><div class="pt-4 border-t" style="border-color: var(--border-color);"><h3 class="font-semibold mb-2">Adicionar Item</h3><form id="addShoppingItemForm" class="grid grid-cols-1 md:grid-cols-2 gap-2 items-end"><div class="relative"><label class="modal-label text-xs">Buscar Item Cadastrado</label><input type="text" id="shopping-item-search" placeholder="Pesquisar ou digitar novo item..." class="custom-input w-full"><div id="shopping-item-results" class="absolute z-20 w-full rounded-md mt-1 hidden max-h-40 overflow-y-auto border" style="border-color: var(--input-border);"></div></div><div class="flex items-end gap-2"><div class="flex-grow"><label class="modal-label text-xs">Qtd.</label><input type="number" id="shopping-item-qty" value="1" min="1" class="custom-input"></div><button type="submit" class="bg-blue-600 p-2 rounded-md text-white hover:bg-blue-700 h-10">Adicionar</button></div></form></div><div class="flex gap-4 pt-6 mt-auto"><button type="button" id="closeShoppingListModal" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Fechar</button><button type="button" id="exportShoppingListPdfBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-green-600 hover:bg-green-700">Salvar e Exportar PDF</button></div></div></div>
     <div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-lg"><h2 class="text-2xl font-semibold mb-2 font-orbitron" style="color: var(--text-title);">Pagamento</h2><div class="flex justify-between items-baseline mb-4"><span class="text-lg">Total: <span id="paymentTotal"></span></span><span class="text-lg font-bold text-red-400">Restante: <span id="paymentRemaining"></span></span></div><div id="payments-made-list" class="mb-4 space-y-2 text-sm"></div><form id="addPaymentForm" class="flex items-end gap-2"><div class="flex-grow"><label class="modal-label text-xs">Valor</label><input type="number" id="payment-amount" step="0.01" min="0" class="custom-input" required></div><div><label class="modal-label text-xs">Forma</label><select id="payment-method" class="custom-select"><option>Dinheiro</option><option>Crédito</option><option>Débito</option><option>Pix</option></select></div><button type="submit" class="bg-blue-600 p-2 rounded-md text-white hover:bg-blue-700 h-10">Adicionar</button></form><div class="text-lg mt-4 font-bold text-green-400 hidden">Troco: <span id="paymentChange">R$ 0,00</span></div><div class="flex gap-4 pt-6 mt-auto"><button type="button" id="cancelPayment" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="button" id="confirmPaymentBtn" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-green-600 hover:bg-green-700 disabled:bg-gray-500" disabled>Finalizar Venda</button></div></div></div>
-    <div id="passwordModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-sm"><h2 class="text-2xl font-semibold mb-4 font-orbitron" style="color: var(--text-title);">Acesso Restrito</h2><p class="text-sm mb-4">Digite a senha de administrador(Lumi10).</p><form id="passwordForm"><input type="password" id="passwordInput" class="custom-input w-full"><p id="passwordError" class="text-red-500 text-xs mt-1 h-4"></p><div class="flex gap-4 pt-4"><button type="button" id="cancelPassword" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700">Entrar</button></div></form></div></div>
+    <div id="passwordModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-sm"><h2 class="text-2xl font-semibold mb-4 font-orbitron" style="color: var(--text-title);">Acesso Restrito</h2><p class="text-sm mb-4">Digite a senha de administrador.</p><form id="passwordForm"><input type="password" id="passwordInput" class="custom-input w-full"><p id="passwordError" class="text-red-500 text-xs mt-1 h-4"></p><div class="flex gap-4 pt-4"><button type="button" id="cancelPassword" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700">Entrar</button></div></form></div></div>
     <div id="saleDetailsModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-lg"><h2 class="text-2xl font-semibold mb-4 font-orbitron" style="color: var(--text-title);">Detalhes da Venda</h2><div id="saleDetailsContent" class="space-y-4 text-sm"></div><div class="flex justify-end pt-6 mt-auto"><button type="button" id="closeSaleDetailsModal" class="w-full sm:w-auto justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Fechar</button></div></div></div>
     <div id="confirmCancelModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md text-center"><h2 class="text-2xl font-semibold mb-5 text-yellow-400 font-orbitron">Cancelar Venda</h2><p class="mb-6">Tem certeza que deseja cancelar esta venda? Os itens retornarão ao estoque.</p><div class="flex gap-4 pt-4"><button type="button" id="cancelCancellation" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Não</button><button type="button" id="confirmCancellation" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-red-600 hover:bg-red-700">Sim, Cancelar</button></div></div></div>
     <div id="reportModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-lg"><h2 class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);">Gerar Relatório</h2><form id="reportForm" class="space-y-4"><div><label class="modal-label block text-sm font-medium">Tipo de Relatório</label><select id="reportType" class="custom-select mt-1"><option value="geral">Geral (Balanço)</option><option value="vendas">Vendas</option><option value="custos">Custos</option></select></div><div class="grid grid-cols-2 gap-4"><div><label class="modal-label block text-sm font-medium">Data Inicial</label><input type="date" id="reportStartDate" class="custom-input mt-1" required></div><div><label class="modal-label block text-sm font-medium">Data Final</label><input type="date" id="reportEndDate" class="custom-input mt-1" required></div></div><div class="flex gap-4 pt-4"><button type="button" id="cancelReport" class="w-full justify-center py-2 px-4 border rounded-md" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md text-white bg-blue-600 hover:bg-blue-700">Gerar PDF</button></div></form></div></div>
     <div id="logoutModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md text-center"><h2 class="text-2xl font-semibold mb-5 font-orbitron">Sair do Sistema</h2><p class="mb-6">Tem certeza de que deseja sair?</p><div class="flex gap-4 pt-4"><button type="button" id="cancelLogout" class="w-full justify-center py-2 px-4 border rounded-md shadow-sm text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="button" id="confirmLogout" class="w-full justify-center py-2 px-4 border-transparent rounded-md shadow-sm text-sm text-white bg-red-600 hover:bg-red-700">Sair</button></div></div></div>
     <div id="fornecedorModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md"><h2 id="fornecedorModalTitle" class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);"></h2><form id="fornecedorForm" class="space-y-4"><input type="hidden" id="fornecedor-id"><div><label class="modal-label block text-sm font-medium">Nome do Fornecedor</label><input type="text" id="fornecedor-nome" required class="custom-input mt-1"></div><div><label class="modal-label block text-sm font-medium">Contato (Nome)</label><input type="text" id="fornecedor-contato" class="custom-input mt-1"></div><div><label class="modal-label block text-sm font-medium">Telefone (com DDD)</label><input type="tel" id="fornecedor-telefone" required class="custom-input mt-1" placeholder="11987654321"></div><div><label class="modal-label block text-sm font-medium">Categoria</label><input type="text" id="fornecedor-categoria" class="custom-input mt-1"></div><div class="flex gap-4 pt-4"><button type="button" id="cancelFornecedor" class="w-full justify-center py-2 px-4 border rounded-md shadow-sm text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md shadow-sm text-sm text-white bg-blue-600 hover:bg-blue-700">Salvar</button></div></form></div></div>
     <div id="funcionarioModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50 p-4"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md"><h2 id="funcionarioModalTitle" class="text-2xl font-semibold mb-5 font-orbitron" style="color: var(--text-title);"></h2><form id="funcionarioForm" class="space-y-4"><input type="hidden" id="funcionario-id"><div><label class="modal-label block text-sm font-medium">Nome do Funcionário</label><input type="text" id="funcionario-nome" required class="custom-input mt-1"></div><div><label class="modal-label block text-sm font-medium">Cargo</label><select id="funcionario-cargo" class="custom-select mt-1"><option>Vendedor(a)</option><option>Gerente</option></select></div><div><label class="modal-label block text-sm font-medium">Telefone (com DDD)</label><input type="tel" id="funcionario-telefone" class="custom-input mt-1" placeholder="83987654321"></div><div class="grid grid-cols-2 gap-4"><div><label class="modal-label block text-sm font-medium">Login</label><input type="text" id="funcionario-login" required class="custom-input mt-1"></div><div><label class="modal-label block text-sm font-medium">Senha</label><input type="password" id="funcionario-senha" required class="custom-input mt-1"></div></div><div class="flex items-center"><input id="funcionario-admin" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 bg-transparent"><label for="funcionario-admin" class="ml-2 block text-sm text-gray-400">Administrador</label></div><div class="flex gap-4 pt-4"><button type="button" id="cancelFuncionario" class="w-full justify-center py-2 px-4 border rounded-md shadow-sm text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="submit" class="w-full justify-center py-2 px-4 border-transparent rounded-md shadow-sm text-sm text-white bg-blue-600 hover:bg-blue-700">Salvar</button></div></form></div></div>
+    <div id="markAsPaidModal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center hidden z-50"><div class="glass-effect p-8 rounded-lg shadow-2xl w-full max-w-md text-center"><h2 class="text-2xl font-semibold mb-5 text-green-400 font-orbitron">Confirmar Pagamento</h2><p class="mb-6">Deseja marcar este custo como pago?</p><div class="flex gap-4 pt-4"><button type="button" id="cancelMarkAsPaid" class="w-full justify-center py-2 px-4 border rounded-md shadow-sm text-sm" style="border-color: var(--input-border); color: var(--text-primary); background-color: var(--btn-bg);">Cancelar</button><button type="button" id="confirmMarkAsPaid" class="w-full justify-center py-2 px-4 border-transparent rounded-md shadow-sm text-sm text-white bg-green-600 hover:bg-green-700">Confirmar</button></div></div></div>
     
     <script type="module">
         const { jsPDF } = window.jspdf;
         // --- DADOS DE DEMONSTRAÇÃO ---
         let mockProdutos = [ { Id: 1, nome: 'Brigadeiro Gourmet', categoria: 'Doces', marca: 'Lumi', unidade: 'Unidade', preco: 4.50, estoque: 50, estoqueMinimo: 10 }, { Id: 2, nome: 'Caixa de Bombom', categoria: 'Chocolates', marca: 'Nestlé', unidade: 'Caixa', preco: 25.00, estoque: 8, estoqueMinimo: 5 }, { Id: 3, nome: 'Bala de Goma (100g)', categoria: 'Balas', marca: 'Fini', unidade: 'Pacote', preco: 6.00, estoque: 80, estoqueMinimo: 20 }, { Id: 4, nome: 'Pirulito Colorido', categoria: 'Balas', marca: 'Lumi', unidade: 'Unidade', preco: 1.50, estoque: 120, estoqueMinimo: 50 }, { Id: 5, nome: 'Barra de Chocolate Amargo', categoria: 'Chocolates', marca: 'Cacau Show', unidade: 'Unidade', preco: 12.00, estoque: 0, estoqueMinimo: 10 }, { Id: 6, nome: 'Paçoca', categoria: 'Doces', marca: 'Santa Helena', unidade: 'Unidade', preco: 2.00, estoque: 45, estoqueMinimo: 15 }, ];
         let mockVendas = [ { Id: 101, items: [{produtoId: 3, produtoNome: "Bala de Goma (100g)", quantidade: 2, precoUnitario: 6.00}], total: 12.00, pagamentos: [{method: 'Débito', amount: 12.00}], data: '2025-07-23T10:00:00Z', edited: false, status: 'completed' }, { Id: 102, items: [{produtoId: 1, produtoNome: "Brigadeiro Gourmet", quantidade: 5, precoUnitario: 4.50}], total: 22.50, pagamentos: [{method: 'Pix', amount: 22.50}], data: '2025-08-15T14:30:00Z', edited: false, status: 'completed' }, { Id: 103, items: [{produtoId: 2, produtoNome: "Caixa de Bombom", quantidade: 1, precoUnitario: 25.00}, {produtoId: 4, produtoNome: "Pirulito Colorido", quantidade: 10, precoUnitario: 1.50}], total: 40.00, pagamentos: [{method: 'Crédito', amount: 40.00}], data: '2025-09-24T18:00:00Z', edited: false, status: 'completed' }, ];
-        let mockFornecedores = [ { Id: 1, nome: "Doce Sabor Atacado", contato: "Carlos", telefone: "83999999999", categoria: "Matéria Prima" }, { Id: 2, nome: "EmbalaTudo Embalagens", contato: "Antônio", telefone: "83900000000", categoria: "Embalagens" } ];
-        let mockFuncionarios = [ { Id: 1, nome: "Admin", cargo: "Gerente", telefone: "83999999999", login: "admin", senha: "Lumi10", isAdmin: true }, { Id: 2, nome: "Maria Silva", cargo: "Vendedor(a)", telefone: "83900000000", login: "msilva", senha: "123", isAdmin: false } ];
-        let mockCustos = [ {Id: 1, descricao: "Aluguel Loja", categoria: "Fixo", data: "2025-09-05T00:00:00Z", valor: 1500.00, fornecedorId: null, status: 'Pago'}, {Id: 2, descricao: "Compra de Chocolate", categoria: "Matéria Prima", data: "2025-09-10T00:00:00Z", valor: 350.75, fornecedorId: 1, status: 'Pago'}, {Id: 3, descricao: "Conta de Energia", categoria: "Variável", data: "2025-09-20T00:00:00Z", valor: 280.50, fornecedorId: null, status: 'Pendente'} ];
+        let mockFornecedores = [ { Id: 1, nome: "Doce Sabor Atacado", contato: "Carlos", telefone: "11987654321", categoria: "Matéria Prima" }, { Id: 2, nome: "EmbalaTudo Embalagens", contato: "Fernanda", telefone: "21912345678", categoria: "Embalagens" } ];
+        let mockFuncionarios = [ { Id: 1, nome: "Admin", cargo: "Gerente", telefone: "83999998888", login: "admin", senha: "lumi10", isAdmin: true }, { Id: 2, nome: "Joana Silva", cargo: "Vendedor(a)", telefone: "83988887777", login: "joana", senha: "123", isAdmin: false } ];
+        let mockCustos = [ {Id: 1, descricao: "Aluguel Loja", categoria: "Fixo", data: "2025-09-05T00:00:00Z", valor: 1500.00, fornecedorId: null, status: 'Pago', receiptFileName: 'comprovante-aluguel.pdf'}, {Id: 2, descricao: "Compra de Chocolate", categoria: "Matéria Prima", data: "2025-09-10T00:00:00Z", valor: 350.75, fornecedorId: 1, status: 'Pago', receiptFileName: null}, {Id: 3, descricao: "Conta de Energia", categoria: "Variável", data: "2025-09-20T00:00:00Z", valor: 280.50, fornecedorId: null, status: 'Pendente', receiptFileName: 'conta_luz.pdf'} ];
         let nextProductId = 7, nextVendaId = 104, nextCustoId = 4, nextFornecedorId = 3, nextFuncionarioId = 3;
         
         // --- API SIMULADA ---
@@ -371,10 +377,27 @@
         const currentUserDisplay = document.getElementById('currentUserDisplay');
         const filterCustoStartDate = document.getElementById('filterCustoStartDate'), filterCustoEndDate = document.getElementById('filterCustoEndDate'), filterCustoFornecedor = document.getElementById('filterCustoFornecedor'), filterCustoStatus = document.getElementById('filterCustoStatus');
         const pendentesList = document.getElementById('pendentesList'), pendentesFilterButtons = document.getElementById('pendentesFilterButtons');
+        const markAsPaidModal = document.getElementById('markAsPaidModal'), cancelMarkAsPaid = document.getElementById('cancelMarkAsPaid'), confirmMarkAsPaid = document.getElementById('confirmMarkAsPaid');
 
         // --- FUNÇÕES UTILITÁRIAS ---
         const formatCurrency = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
         const getStockStatus = (p) => p.estoque === 0 ? { k: 'out', t: 'Esgotado', c: 'stock-status-out' } : p.estoque <= p.estoqueMinimo ? { k: 'low', t: 'Estoque Baixo', c: 'stock-status-low' } : { k: 'ok', t: 'Em Estoque', c: 'stock-status-ok' };
+        const handleViewReceipt = (costId) => {
+            const cost = allCustos.find(c => c.Id === costId);
+            if (cost && cost.receiptFileName) {
+                const newWindow = window.open("", "_blank");
+                newWindow.document.write(`
+                    <html>
+                        <head><title>Comprovante</title></head>
+                        <body style="font-family: sans-serif; text-align: center; padding: 20px; background-color: #161b22; color: #e2e8f0;">
+                            <h2>Comprovante: ${cost.receiptFileName}</h2>
+                            <p>Em um sistema real, o comprovante (imagem/PDF) seria exibido aqui.</p>
+                            <a href="#" download="${cost.receiptFileName}" style="display: inline-block; padding: 10px 20px; background-color: #3b82f6; color: white; text-decoration: none; border-radius: 5px;">Simular Download</a>
+                        </body>
+                    </html>
+                `);
+            }
+        };
 
         // --- LÓGICA DE RENDERIZAÇÃO ---
         const renderEstoqueView = (prods) => {
@@ -393,15 +416,16 @@
                 <tr class="border-b" style="border-color: var(--border-color);">
                     <td class="px-4 py-3 text-sm">${new Date(c.data).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</td>
                     <td class="px-4 py-3 text-sm text-gray-400">${c.descricao}</td>
-                    <td class="px-4 py-3 text-sm text-gray-400">${fornecedor ? fornecedor.nome : 'N/A'}</td>
                     <td class="px-4 py-3 text-sm text-gray-400">${formatCurrency(c.valor)}</td>
                     <td class="px-4 py-3 text-sm"><span class="stock-status ${statusClass}">${statusText}</span></td>
+                     <td class="px-4 py-3 text-sm text-gray-400">${c.receiptFileName ? c.receiptFileName.substring(0,10)+'...' : 'Nenhum'}</td>
                     <td class="px-4 py-3 text-center"><div class="flex items-center justify-center gap-1">
-                        <button class="action-btn edit-cost-btn" data-item='${JSON.stringify(c)}' title="Editar Custo"><svg class="pointer-events-none text-blue-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V12h2.293z"/></svg></button>
+                        ${c.receiptFileName ? `<button class="action-btn view-receipt-btn" data-id="${c.Id}" title="Ver Comprovante"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="pointer-events-none text-cyan-400" viewBox="0 0 16 16"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/></svg></button>` : ''}
+                        <button class="action-btn edit-cost-btn" data-id="${c.Id}" title="Editar Custo"><svg class="pointer-events-none text-blue-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V12h2.293z"/></svg></button>
                         <button class="action-btn delete-cost-btn" data-id="${c.Id}" title="Apagar Custo"><svg class="pointer-events-none text-red-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/></svg></button>
                     </div></td>
                 </tr>
-            `}).join('') : `<tr><td colspan="6" class="p-4 text-center">Nenhum custo encontrado.</td></tr>`;
+            `}).join('') : `<tr><td colspan="7" class="p-4 text-center">Nenhum custo encontrado.</td></tr>`;
         };
         
         const renderPendentesView = (period = 'all') => {
@@ -427,8 +451,15 @@
                     <td class="px-4 py-3 text-sm text-gray-400">${c.descricao}</td>
                     <td class="px-4 py-3 text-sm text-gray-400">${fornecedor ? fornecedor.nome : 'N/A'}</td>
                     <td class="px-4 py-3 text-sm text-gray-400">${formatCurrency(c.valor)}</td>
+                    <td class="px-4 py-3 text-center">
+                        <div class="flex items-center justify-center gap-1">
+                             ${c.receiptFileName ? `<button class="action-btn view-receipt-btn" data-id="${c.Id}" title="Ver Comprovante"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="pointer-events-none text-cyan-400" viewBox="0 0 16 16"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/></svg></button>` : ''}
+                            <button class="action-btn edit-cost-btn" data-id="${c.Id}" title="Editar Custo"><svg class="pointer-events-none text-blue-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V12h2.293z"/></svg></button>
+                            <button class="action-btn mark-paid-btn" data-id="${c.Id}" title="Marcar como Pago"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="pointer-events-none text-green-400" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg></button>
+                        </div>
+                    </td>
                 </tr>
-            `}).join('') : `<tr><td colspan="4" class="p-4 text-center">Nenhum pagamento pendente.</td></tr>`;
+            `}).join('') : `<tr><td colspan="5" class="p-4 text-center">Nenhum pagamento pendente.</td></tr>`;
         };
 
         const renderVendasView = (vendas) => {
@@ -884,7 +915,7 @@
             e.preventDefault();
             const password = document.getElementById('passwordInput').value;
             const errorEl = document.getElementById('passwordError');
-            if(password === 'Lumi10') {
+            if(password === 'lumi10') {
                 errorEl.textContent = '';
                 passwordForm.reset();
                 passwordModal.classList.add('hidden');
@@ -960,7 +991,6 @@
                 currentUser = foundUser;
                 currentUserDisplay.textContent = `Olá, ${currentUser.nome}`;
 
-                // Libera a tela de Custos para todos os usuários logados
                 pageCustosBtn.classList.remove('hidden');
 
                 if (currentUser.isAdmin) {
@@ -987,18 +1017,45 @@
             loginPage.classList.remove('hidden');
             loginForm.reset();
         });
+        
+        const openCostEditor = (costId) => {
+            const item = allCustos.find(c => c.Id === costId);
+            if (!item) return;
+
+            addCostForm['cost-id'].value = item.Id;
+            addCostForm['cost-description'].value = item.descricao;
+            addCostForm['cost-category'].value = item.categoria;
+            addCostForm['cost-date'].value = item.data.split('T')[0];
+            addCostForm['cost-value'].value = item.valor;
+            addCostForm['cost-supplier'].value = item.fornecedorId || '';
+            addCostForm['cost-status'].value = item.status || 'Pago';
+            
+            const currentReceiptEl = document.getElementById('current-receipt');
+            if (item.receiptFileName) {
+                currentReceiptEl.textContent = `Atual: ${item.receiptFileName}`;
+            } else {
+                currentReceiptEl.textContent = '';
+            }
+            addCostForm['cost-receipt'].value = '';
+
+            saveCostBtn.textContent = 'Salvar Alterações';
+        };
 
         // CUSTOS
         addCostForm.addEventListener('submit', async(e) => {
             e.preventDefault();
             const id = addCostForm['cost-id'].value ? parseInt(addCostForm['cost-id'].value) : null;
+            const receiptFile = addCostForm['cost-receipt'].files[0];
+            const currentReceipt = id ? allCustos.find(c => c.Id === id).receiptFileName : null;
+
             const data = {
                 descricao: addCostForm['cost-description'].value,
                 categoria: addCostForm['cost-category'].value,
                 data: addCostForm['cost-date'].value,
                 valor: parseFloat(addCostForm['cost-value'].value),
                 fornecedorId: addCostForm['cost-supplier'].value ? parseInt(addCostForm['cost-supplier'].value) : null,
-                status: addCostForm['cost-status'].value
+                status: addCostForm['cost-status'].value,
+                receiptFileName: receiptFile ? receiptFile.name : currentReceipt
             };
             if(id) {
                 await api.patchCusto(id, data);
@@ -1006,6 +1063,7 @@
                 await api.postCusto(data);
             }
             addCostForm.reset();
+            document.getElementById('current-receipt').textContent = '';
             addCostForm['cost-id'].value = '';
             saveCostBtn.textContent = 'Adicionar Custo';
             await loadData();
@@ -1014,23 +1072,42 @@
         costsList.addEventListener('click', (e) => {
             const btn = e.target.closest('button');
             if(!btn) return;
+            const costId = parseInt(btn.dataset.id);
 
             if (btn.classList.contains('edit-cost-btn')) {
-                const item = JSON.parse(btn.dataset.item);
-                addCostForm['cost-id'].value = item.Id;
-                addCostForm['cost-description'].value = item.descricao;
-                addCostForm['cost-category'].value = item.categoria;
-                addCostForm['cost-date'].value = item.data.split('T')[0];
-                addCostForm['cost-value'].value = item.valor;
-                addCostForm['cost-supplier'].value = item.fornecedorId || '';
-                addCostForm['cost-status'].value = item.status || 'Pago';
-                saveCostBtn.textContent = 'Salvar Alterações';
+                openCostEditor(costId);
             } else if (btn.classList.contains('delete-cost-btn')) {
                 deleteModal.querySelector('p').textContent = 'Tem certeza de que deseja apagar este custo? Esta ação não pode ser desfeita.';
-                confirmDelete.dataset.id = btn.dataset.id;
+                confirmDelete.dataset.id = costId;
                 confirmDelete.dataset.type = 'cost';
                 deleteModal.classList.remove('hidden');
+            } else if (btn.classList.contains('view-receipt-btn')) {
+                handleViewReceipt(costId);
             }
+        });
+        
+        pendentesList.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if(!btn) return;
+            const costId = parseInt(btn.dataset.id);
+
+            if (btn.classList.contains('edit-cost-btn')) {
+                openCostEditor(costId);
+                switchPage('Custos');
+            } else if (btn.classList.contains('mark-paid-btn')) {
+                confirmMarkAsPaid.dataset.id = costId;
+                markAsPaidModal.classList.remove('hidden');
+            } else if (btn.classList.contains('view-receipt-btn')) {
+                handleViewReceipt(costId);
+            }
+        });
+        
+        cancelMarkAsPaid.addEventListener('click', () => markAsPaidModal.classList.add('hidden'));
+        confirmMarkAsPaid.addEventListener('click', async (e) => {
+            const id = parseInt(e.currentTarget.dataset.id);
+            await api.patchCusto(id, { status: 'Pago' });
+            markAsPaidModal.classList.add('hidden');
+            await loadData();
         });
 
         // --- GESTÃO ---
